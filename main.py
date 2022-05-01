@@ -19,80 +19,200 @@ import os
 
 ########## CONSTANTES ##########
 
-
+########## Variáveis ##########
+historico_jogadas = {
+    "jogador1": [],
+    "jogador2": [],
+    "vencedor": "",
+}
 
 def clear():
     os.system("clear")
 
+def main():
 
-N_COLS = 5
-N_LINHAS = 5
-QNT_RAND_NUNS = 100
+    # funcoes.animacao_inicio()
 
-matriz_aleatoria = funcoes.gerar_matriz_aleatoria(N_LINHAS, N_COLS, QNT_RAND_NUNS)
-matriz_oculta = funcoes.gerar_matriz_oculta(N_LINHAS, N_COLS)
-somaLados = funcoes.somarLadosMatriz(matriz_aleatoria)
-# rawSoma = {
-#     "linhas": [0] * N_LINHAS,
-#     "colunas": [0] * N_COLS
-# }
-rawSoma = {
-    "linhas": somaLados,
-    "colunas": [0] * N_COLS
-}
+    funcoes.clear()
 
-# matriz.mostrar_matriz(m, show_sum=True)
-# matriz.mostrar_matriz_oculta(4,4)
+    print("="*50)
+    print("{:^50s}".format("Bem vindo ao:"))
+    print("{:^50s}".format("Jogo das Somas Esquecidas"))
+    print("="*50)
 
-while True:
-    clear()
+    print()
 
-    funcoes.mostrar_matriz(matriz_aleatoria, show_sum=True, soma={
-        "linhas": somaLados["linhas"],
-        "colunas": somaLados["colunas"]
-    })
-    # print()
-    funcoes.mostrar_matriz2(matriz_oculta, rawSoma)
+    print("{:^50s}".format("Modos de jogo:\n"))
 
-    tipo = input("Digite o tipo de soma: (c)oluna ou (l)inha: ")[0].lower() # c = coluna; l = linha
-    index = int(input("Digite o lado da {}: ".format("coluna" if tipo == "c" else "linha")))-1
-    soma = int(input("Digite o valor da soma: "))
-    valor = []
-    if tipo == "c":
-        valor = [matriz_aleatoria[i][index] for i in range(N_COLS)]
+    print("Quantos tabuleiros?")
+    print("[0] {:<8} [1] {:<8}".format("Um tabuleiro", "Dois tabuleiros"))
+
+    modo = funcoes.receber_e_validar_entrada_numeros("", 0, 1)
+
+    print("Qual o nível?")
+    print("[0] {:<8} [1] {:<8} [2] {:<8}".format("Fácil", "Médio", "Difícil"))
+    nivel = funcoes.receber_e_validar_entrada_numeros("", 0, 2)
+
+
+
+    N_COLS = 1
+    N_LINHAS = 1
+    QNT_RAND_NUNS = 1
+
+
+    if nivel == 0: # facil
+        N_COLS = 3
+        N_LINHAS = 3
+        QNT_RAND_NUNS = 30
+    elif nivel == 1: # medio
+        N_COLS = 4
+        N_LINHAS = 4
+        QNT_RAND_NUNS = 60
+    elif nivel == 2: # dificil
+        N_COLS = 5
+        N_LINHAS = 5
+        QNT_RAND_NUNS = 100
+
+    ''''
+        Gerando tabuleiros
+    '''
+
+    # TABULEIRO 1
+    tabuleiro1 = {
+        "matriz_aleatoria": funcoes.gerar_matriz_aleatoria(N_LINHAS, N_COLS, QNT_RAND_NUNS),
+        "matriz_oculta": funcoes.gerar_matriz_oculta(N_LINHAS, N_COLS),
+        "somaLados": [],
+        "rawSoma": {
+            "linhas": [0] * N_LINHAS,
+            "colunas": [0] * N_COLS
+        }
+    }
+    tabuleiro1["somaLados"] = funcoes.somarLadosMatriz(tabuleiro1["matriz_aleatoria"])
+
+    # TABULEIRO 2
+    tabuleiro2 = {
+        "matriz_aleatoria": funcoes.gerar_matriz_aleatoria(N_LINHAS, N_COLS, QNT_RAND_NUNS),
+        "matriz_oculta": funcoes.gerar_matriz_oculta(N_LINHAS, N_COLS),
+        "somaLados": [],
+        "rawSoma": {
+            "linhas": [0] * N_LINHAS,
+            "colunas": [0] * N_COLS
+        }
+    }
+    tabuleiro2["somaLados"] = funcoes.somarLadosMatriz(tabuleiro2["matriz_aleatoria"])
+
+    #################################
+
+    # matriz_aleatoria = funcoes.gerar_matriz_aleatoria(N_LINHAS, N_COLS, QNT_RAND_NUNS)
+    # matriz_oculta = funcoes.gerar_matriz_oculta(N_LINHAS, N_COLS)
+    # somaLados = funcoes.somarLadosMatriz(matriz_aleatoria)
+    # rawSoma = {
+    #     "linhas": [0] * N_LINHAS,
+    #     "colunas": [0] * N_COLS
+    # }
+
+    quemJoga = 0 # 0 = jogador1, 1 = jogador2
+    # historico_jogadas
+
+    while funcoes.isMatrizCompleta(tabuleiro1["matriz_oculta"]) == False or funcoes.isMatrizCompleta(tabuleiro2["matriz_oculta"]): # enquanto não tiver todas as posições preenchidas
+        clear()
+        
+        tabuleiro = {}
+
+        if modo == 1: # modo de 2 tabuleiros
+            if quemJoga == 0:
+                tabuleiro = tabuleiro1
+                quemJoga = 1 # proximo jogador = jogador2
+            else:
+                tabuleiro = tabuleiro2
+                quemJoga = 0 # proximo jogador = jogador1
+        else:
+            tabuleiro = tabuleiro1
+
+        print()
+
+        funcoes.mostrar_matriz_com_resultados(tabuleiro["matriz_aleatoria"], show_sum=True, soma={
+            "linhas": tabuleiro["somaLados"]["linhas"],
+            "colunas": tabuleiro["somaLados"]["colunas"]
+        })
+        # print()
+        funcoes.mostrar_matriz(tabuleiro["matriz_oculta"], tabuleiro["rawSoma"])
+
+        tipo = funcoes.receber_e_validar_entrada_tipo() # c = coluna; l = linha
+
+        index = funcoes.receber_e_validar_entrada_col_row(tipo, N_COLS, N_LINHAS) -1 # -1 pois o usuario digita a partir do 1 e a matriz le a partir do 0
+
+        soma = int(input("Digite o valor da soma: "))
+
+        historico_jogadas["jogador1" if quemJoga == 0 else "jogador2"].append({
+            "tipo": tipo,
+            "index": index,
+            "soma": soma
+        })
+
+
+        valor = []
+        if tipo == "c":
+            valor = [tabuleiro["matriz_aleatoria"][i][index] for i in range(N_COLS)]
+        else:
+            valor = [tabuleiro["matriz_aleatoria"][index][i] for i in range(N_COLS)]
+
+        somaLado = tabuleiro["somaLados"]["colunas"][index]
+
+        if somaLado == soma:
+            if tipo == "c":
+                tabuleiro["rawSoma"]["colunas"][index] = soma
+                for i in range(N_COLS):
+                    tabuleiro["matriz_oculta"][i][index] = valor[i]
+            elif tipo == "l":
+                tabuleiro["rawSoma"]["linhas"][index] = soma
+                tabuleiro["matriz_oculta"][index] = valor
+            print("Parabéns, você acertou a soma!")
+        elif somaLado > soma:
+            if tipo == "c":
+                maxValue = min(valor)
+                indexValue = valor.index(maxValue)
+                tabuleiro["matriz_oculta"][indexValue][index] = maxValue
+            elif tipo == "l":
+                maxValue = min(valor)
+                indexValue = valor.index(maxValue)
+                tabuleiro["matriz_oculta"][index][indexValue] = maxValue
+            print("Você errou, a soma é maior!")
+        else:
+            if tipo == "c":
+                maxValue = max(valor)
+                indexValue = valor.index(maxValue)
+                tabuleiro["matriz_oculta"][indexValue][index] = maxValue
+            elif tipo == "l":
+                maxValue = max(valor)
+                indexValue = valor.index(maxValue)
+                tabuleiro["matriz_oculta"][index][indexValue] = maxValue
+            print("Você errou, a soma é menor!")
+
+        input("\nAperte enter para continuar:")
+
+    funcoes.clear() # limpa a tela
+    
+    funcoes.animacao_inicio() # mostra a animação de inicio
+
+    print("="*50)
+    print("{:^50}".format("FIM DO JOGO!"))
+    print("="*50)
+
+    funcoes.clear() # limpa a tela
+
+    if quemJoga == 0:
+        historico_jogadas["vencedor"] = "2"
+        print("O jogador 2 venceu!")
+    elif quemJoga == 1:
+        historico_jogadas["vencedor"] = "1"
+        print("O jogador 1 venceu!")
     else:
-        valor = [matriz_aleatoria[index][i] for i in range(N_COLS)]
+        historico_jogadas["vencedor"] = "empate"
+        print("Empate!")
 
-    somaLado = somaLados["colunas"][index]
-
-    if somaLado == soma:
-        if tipo == "c":
-            rawSoma["colunas"][index] = soma
-            for i in range(N_COLS):
-                matriz_oculta[i][index] = valor[i]
-        elif tipo == "l":
-            rawSoma["linhas"][index] = soma
-            matriz_oculta[index] = valor
-        print("Parabéns, você acertou a soma!")
-    elif somaLado > soma:
-        if tipo == "c":
-            maxValue = min(valor)
-            indexValue = valor.index(maxValue)
-            matriz_oculta[indexValue][index] = maxValue
-        elif tipo == "l":
-            maxValue = min(valor)
-            indexValue = valor.index(maxValue)
-            matriz_oculta[index][indexValue] = maxValue
-        print("Você errou, a soma é maior!")
-    else:
-        if tipo == "c":
-            maxValue = max(valor)
-            indexValue = valor.index(maxValue)
-            matriz_oculta[indexValue][index] = maxValue
-        elif tipo == "l":
-            maxValue = max(valor)
-            indexValue = valor.index(maxValue)
-            matriz_oculta[index][indexValue] = maxValue
-        print("Você errou, a soma é menor!")
-
-    input("\nAperte enter para continuar:")
+    verHistorico = input("Deseja ver o histórico de jogadas? (s/n)")[0].lower() == "s"
+    if verHistorico:
+        funcoes.mostrar_historico(historico_jogadas)
+if __name__ == "__main__":
+    main()

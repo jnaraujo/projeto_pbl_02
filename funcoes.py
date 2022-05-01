@@ -1,5 +1,30 @@
-import collections
+import os
 import random
+
+import time
+
+def animacao_inicio():
+    rows = 40
+    cols = 50
+    m = [ [ " " for i in range(cols) ] for j in range(rows) ]
+
+    mostrar_lista_animacao(m)
+    for row in range(rows):
+        for col in range(cols):
+            random_number = random.randint(0, 3)
+            if random_number == 3:
+                m[row][col] = "|"
+        mostrar_lista_animacao(m)    
+        time.sleep(0.03)
+def mostrar_lista_animacao(matriz):
+    clear()
+    for row in matriz:
+        for col in row:
+            print("{}".format(str(col)), end="")
+        print()
+
+def clear():
+    os.system("clear")
 
 
 def gerar_matriz(n_linhas, n_cols):
@@ -50,7 +75,7 @@ def gerar_matriz_aleatoria(n_linhas, n_cols, max_val):
     return matriz
 
 
-def mostrar_matriz(matriz, show_sum=False, soma={"linhas":[], "colunas": []}):
+def mostrar_matriz_com_resultados(matriz, show_sum=False, soma={"linhas":[], "colunas": []}):
     index = 0
     for linha in matriz:
         for i in range(len(linha)):
@@ -74,7 +99,7 @@ def mostrar_matriz(matriz, show_sum=False, soma={"linhas":[], "colunas": []}):
                 print("  {:^4s} ".format(str(soma["colunas"][i])), end="")
         print("")
 
-def mostrar_matriz2(matriz, soma={"linhas":[], "colunas": []}):
+def mostrar_matriz(matriz, soma={"linhas":[], "colunas": []}):
     index = 0
 
     for i in range(len(matriz)): # print o numero da coluna em cima do tabuleiro
@@ -100,13 +125,85 @@ def mostrar_matriz2(matriz, soma={"linhas":[], "colunas": []}):
         print("   ", end="")
         for i in range(len(soma["colunas"])):
             if soma["colunas"][i] > 0:
-                if i == 0:
-                    print(" \033[1;32m{:^4s}\033[0;0m ".format(str(soma["colunas"][i])), end="")
-                else:
-                    print(" \033[1;32m{:^4s}\033[0;0m ".format(str(soma["colunas"][i])), end="")
+                print("\033[1;32m{:^4s}\033[0;0m".format(str(soma["colunas"][i])), end="")
             else:
-                if i == 0:
-                    print("{:^4s}  ".format("#"), end="")
-                else:
-                    print(" {:^4s}  ".format("#"), end="")
+                print("{:^4s}".format("#"), end="")
+            print("   ", end="")
         print("")
+
+def isMatrizCompleta(matriz):
+    for row in matriz:
+        for col in row:
+            if not str(col).isnumeric():
+                return False
+    return True
+
+
+def mostrar_historico(historico):
+    for i in range(len(historico["jogador1"])):
+        tipo = "coluna" if historico["jogador1"][i]["tipo"] == "c" else "linha"
+        print("(Rodada {}) Jogador 1: Tipo: {}; Index: {}; Soma: {}".format(i, tipo, historico["jogador1"][i]["index"], historico["jogador1"][i]["soma"]))
+
+        if len(historico["jogador2"]) > i:
+            tipo = "coluna" if historico["jogador2"][i]["tipo"] == "c" else "linha"
+            print("(Rodada {}) Jogador 2: Tipo: {}; Index: {}; Soma: {}".format(i, tipo, historico["jogador2"][i]["index"], historico["jogador2"][i]["soma"]))
+
+    if "vencedor" in historico and historico["vencedor"] != "empate":
+        print("Resultado da partida: Vitória do jogador {}".format(historico["vencedor"]))
+    else:
+        print("Resultado da partida: Empate")
+        
+
+# FUNÇÕES DE VALIDAÇÕES DE DADOS
+
+def validar_entrada_numeros(entrada, v_min, v_max):
+    if entrada > v_max or entrada < v_min:
+        return False
+    return True
+
+def receber_e_validar_entrada_numeros(texto_entrada, v_min, v_max):
+    
+    try:
+        entrada = int(input(texto_entrada))
+
+        while validar_entrada_numeros(entrada, v_min, v_max) == False:
+            print("Entrada inválida!")
+            entrada = int(input(texto_entrada))
+        return entrada
+    except ValueError:
+        print("Entrada inválida!")
+        return receber_e_validar_entrada_numeros(texto_entrada, v_min, v_max)
+def validar_entrada_tipo(entrada):
+    if entrada not in ["c", "l"]:
+        return False
+    return True
+
+
+def validar_entrada_col_row(entrada, n_cols):
+    if entrada < 1 or entrada > n_cols:
+        return False
+    return True 
+
+def receber_e_validar_entrada_col_row(tipo, n_cols, n_rows):
+    try:
+        entrada = int(input("Digite o lado da {}: ".format("coluna" if tipo == "c" else "linha")))
+
+        while validar_entrada_col_row(entrada, n_cols) == False:
+            print("Entrada inválida!")
+            entrada = int(input("Digite o lado da {}: ".format("coluna" if tipo == "c" else "linha")))
+        return entrada
+    except ValueError:
+        print("Entrada inválida!")
+        return receber_e_validar_entrada_col_row(tipo, n_cols, n_rows)
+
+def receber_e_validar_entrada_tipo():
+    try:
+        entrada = input("Onde você deseja somar ( c: coluna ou l: linha ): ")[0].lower()
+
+        while validar_entrada_tipo(entrada) == False:
+            print("Entrada inválida!")
+            entrada = input("Onde você deseja somar ( c: coluna ou l: linha ): ")[0].lower()
+        return entrada
+    except ValueError:
+        print("Entrada inválida!")
+        return receber_e_validar_entrada_tipo()
