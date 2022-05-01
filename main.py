@@ -25,6 +25,10 @@ historico_jogadas = {
     "jogador2": [],
     "vencedor": "",
 }
+pontuacao = {
+    "jogador1": 0,
+    "jogador2": 0,
+}
 
 def clear():
     os.system("clear")
@@ -103,33 +107,35 @@ def main():
 
     #################################
 
-    # matriz_aleatoria = funcoes.gerar_matriz_aleatoria(N_LINHAS, N_COLS, QNT_RAND_NUNS)
-    # matriz_oculta = funcoes.gerar_matriz_oculta(N_LINHAS, N_COLS)
-    # somaLados = funcoes.somarLadosMatriz(matriz_aleatoria)
-    # rawSoma = {
-    #     "linhas": [0] * N_LINHAS,
-    #     "colunas": [0] * N_COLS
     # }
 
     quemJoga = 0 # 0 = jogador1, 1 = jogador2
     # historico_jogadas
+    rodada = 0 # contador de rodadas
 
     while funcoes.isMatrizCompleta(tabuleiro1["matriz_oculta"]) == False or funcoes.isMatrizCompleta(tabuleiro2["matriz_oculta"]): # enquanto não tiver todas as posições preenchidas
         clear()
         
         tabuleiro = {}
 
+        if quemJoga == 0: # quando for o jogador 1 de novo
+            rodada += 1 # adiciona 1 as rodadas
+
         if modo == 1: # modo de 2 tabuleiros
             if quemJoga == 0:
                 tabuleiro = tabuleiro1
-                quemJoga = 1 # proximo jogador = jogador2
             else:
                 tabuleiro = tabuleiro2
-                quemJoga = 0 # proximo jogador = jogador1
         else:
             tabuleiro = tabuleiro1
 
         print()
+
+        print("="*50)
+        print("{:^50s}".format("Rodada {:.0f}".format(rodada-1)))
+        print("{:^50s}".format("Quem joga: " + ("Jogador 1" if quemJoga == 0 else "Jogador 2")))
+        print("{:^50s}".format("Jogador 1 | {} x {} | Jogador 2".format(pontuacao["jogador1"], pontuacao["jogador2"])))
+        print("="*50)
 
         funcoes.mostrar_matriz_com_resultados(tabuleiro["matriz_aleatoria"], show_sum=True, soma={
             "linhas": tabuleiro["somaLados"]["linhas"],
@@ -152,12 +158,14 @@ def main():
 
 
         valor = []
+        somaLado = 0
+
         if tipo == "c":
             valor = [tabuleiro["matriz_aleatoria"][i][index] for i in range(N_COLS)]
+            somaLado = tabuleiro["somaLados"]["colunas"][index]
         else:
             valor = [tabuleiro["matriz_aleatoria"][index][i] for i in range(N_COLS)]
-
-        somaLado = tabuleiro["somaLados"]["colunas"][index]
+            somaLado = tabuleiro["somaLados"]["linhas"][index]
 
         if somaLado == soma:
             if tipo == "c":
@@ -167,6 +175,9 @@ def main():
             elif tipo == "l":
                 tabuleiro["rawSoma"]["linhas"][index] = soma
                 tabuleiro["matriz_oculta"][index] = valor
+            
+            pontuacao["jogador1" if quemJoga == 0 else "jogador2"] += 3 # adiciona 3 pontos em caso de acertar tudo
+
             print("Parabéns, você acertou a soma!")
         elif somaLado > soma:
             if tipo == "c":
@@ -177,6 +188,9 @@ def main():
                 maxValue = min(valor)
                 indexValue = valor.index(maxValue)
                 tabuleiro["matriz_oculta"][index][indexValue] = maxValue
+
+            pontuacao["jogador1" if quemJoga == 0 else "jogador2"] += 1 # adiciona 1 ponto em caso de mostrar uma casa
+
             print("Você errou, a soma é maior!")
         else:
             if tipo == "c":
@@ -187,7 +201,16 @@ def main():
                 maxValue = max(valor)
                 indexValue = valor.index(maxValue)
                 tabuleiro["matriz_oculta"][index][indexValue] = maxValue
+
+            pontuacao["jogador1" if quemJoga == 0 else "jogador2"] += 1 # adiciona 1 pontos em caso de mostrar uma casa
             print("Você errou, a soma é menor!")
+
+
+        # Verifica o próximo a jogar
+        if quemJoga == 0: # se quem jogou foi o jogador 1
+            quemJoga = 1 # proximo jogador = jogador2
+        else: # se quem jogou foi o jogador 2
+            quemJoga = 0 # proximo jogador = jogador1
 
         input("\nAperte enter para continuar:")
 

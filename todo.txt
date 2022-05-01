@@ -1,0 +1,2 @@
+Verificar a pontuacao para evitar que se farm pontos
+ou seja, se aquela casa ja foi aberta, nao pontuar

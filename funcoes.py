@@ -85,8 +85,8 @@ def mostrar_matriz_com_resultados(matriz, show_sum=False, soma={"linhas":[], "co
             else:
                 print(" | {:^4s}".format(str(col)), end="")
         
-        if show_sum and soma["colunas"][index] > 0:
-            print(" < {:^4s}".format(str(soma["colunas"][index])))
+        if show_sum and soma["linhas"][index] > 0:
+            print(" < {:^4s}".format(str(soma["linhas"][index])))
             index += 1
         else:
             print("")
