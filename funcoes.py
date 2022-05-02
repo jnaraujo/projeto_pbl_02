@@ -3,29 +3,8 @@ import random
 
 import time
 
-def animacao_inicio():
-    rows = 40
-    cols = 50
-    m = [ [ " " for i in range(cols) ] for j in range(rows) ]
-
-    mostrar_lista_animacao(m)
-    for row in range(rows):
-        for col in range(cols):
-            random_number = random.randint(0, 3)
-            if random_number == 3:
-                m[row][col] = "|"
-        mostrar_lista_animacao(m)    
-        time.sleep(0.03)
-def mostrar_lista_animacao(matriz):
-    clear()
-    for row in matriz:
-        for col in row:
-            print("{}".format(str(col)), end="")
-        print()
-
 def clear():
     os.system("clear")
-
 
 def gerar_matriz(n_linhas, n_cols):
     """
@@ -51,8 +30,6 @@ def somarLadosMatriz(matriz):
         "colunas": somas_colunas,
         "linhas": somas_linhas
     }
-    
-
 
 def gerar_lista_aleatoria(v_min, v_max, size):
     lista_ordenada = [i for i in range(v_min, v_max)]
@@ -74,6 +51,51 @@ def gerar_matriz_aleatoria(n_linhas, n_cols, max_val):
             matriz[i][j] = valores_aleatorio[i * n_cols + j]
     return matriz
 
+
+
+def isMatrizCompleta(matriz):
+    for row in matriz:
+        for col in row:
+            if not str(col).isnumeric():
+                return False
+    return True
+
+'''
+    FUNÇÕES DE IMPRIMIR VALORES
+'''
+def animacao_inicio():
+    rows = 40
+    cols = 70
+    m = [ [ " " for i in range(cols) ] for j in range(rows) ]
+
+    mostrar_lista_animacao(m)
+    for row in range(rows):
+        for col in range(cols):
+            random_number = random.randint(0, 3)
+            if random_number == 3:
+                m[row][col] = "|"
+        mostrar_lista_animacao(m)    
+        time.sleep(0.03)
+def mostrar_lista_animacao(matriz):
+    clear()
+    for row in matriz:
+        for col in row:
+            print("{}".format(str(col)), end="")
+        print()
+
+def mostrar_historico(historico):
+    for i in range(len(historico["jogador1"])):
+        tipo = "coluna" if historico["jogador1"][i]["tipo"] == "c" else "linha"
+        print("(Rodada {}) Jogador 1: Tipo: {}; Index: {}; Soma: {}".format(i, tipo, historico["jogador1"][i]["index"], historico["jogador1"][i]["soma"]))
+
+        if len(historico["jogador2"]) > i:
+            tipo = "coluna" if historico["jogador2"][i]["tipo"] == "c" else "linha"
+            print("(Rodada {}) Jogador 2: Tipo: {}; Index: {}; Soma: {}".format(i, tipo, historico["jogador2"][i]["index"], historico["jogador2"][i]["soma"]))
+
+    if "vencedor" in historico and historico["vencedor"] != "empate":
+        print("Resultado da partida: Vitória do jogador {}".format(historico["vencedor"]))
+    else:
+        print("Resultado da partida: Empate")
 
 def mostrar_matriz_com_resultados(matriz, show_sum=False, soma={"linhas":[], "colunas": []}):
     index = 0
@@ -129,32 +151,11 @@ def mostrar_matriz(matriz, soma={"linhas":[], "colunas": []}):
             else:
                 print("{:^4s}".format("#"), end="")
             print("   ", end="")
-        print("")
+        print("")       
 
-def isMatrizCompleta(matriz):
-    for row in matriz:
-        for col in row:
-            if not str(col).isnumeric():
-                return False
-    return True
-
-
-def mostrar_historico(historico):
-    for i in range(len(historico["jogador1"])):
-        tipo = "coluna" if historico["jogador1"][i]["tipo"] == "c" else "linha"
-        print("(Rodada {}) Jogador 1: Tipo: {}; Index: {}; Soma: {}".format(i, tipo, historico["jogador1"][i]["index"], historico["jogador1"][i]["soma"]))
-
-        if len(historico["jogador2"]) > i:
-            tipo = "coluna" if historico["jogador2"][i]["tipo"] == "c" else "linha"
-            print("(Rodada {}) Jogador 2: Tipo: {}; Index: {}; Soma: {}".format(i, tipo, historico["jogador2"][i]["index"], historico["jogador2"][i]["soma"]))
-
-    if "vencedor" in historico and historico["vencedor"] != "empate":
-        print("Resultado da partida: Vitória do jogador {}".format(historico["vencedor"]))
-    else:
-        print("Resultado da partida: Empate")
-        
-
-# FUNÇÕES DE VALIDAÇÕES DE DADOS
+'''
+    FUNÇÕES DE VALIDAÇÕES DE DADOS
+'''
 
 def validar_entrada_numeros(entrada, v_min, v_max):
     if entrada > v_max or entrada < v_min:

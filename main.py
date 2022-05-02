@@ -20,6 +20,7 @@ import os
 ########## CONSTANTES ##########
 
 ########## Variáveis ##########
+
 historico_jogadas = {
     "jogador1": [],
     "jogador2": [],
@@ -39,29 +40,41 @@ def main():
 
     funcoes.clear()
 
-    print("="*50)
-    print("{:^50s}".format("Bem vindo ao:"))
-    print("{:^50s}".format("Jogo das Somas Esquecidas"))
-    print("="*50)
+    print("="*70)
+    print('''
+    /$$$$$            /$$$$$$            /$$$$$$$$                    
+   |__  $$           /$$__  $$          | $$_____/                    
+      | $$  /$$$$$$ | $$  \__/  /$$$$$$ | $$        /$$$$$$$  /$$$$$$ 
+      | $$ /$$__  $$|  $$$$$$  /$$__  $$| $$$$$    /$$_____/ /$$__  $$
+ /$$  | $$| $$  \ $$ \____  $$| $$  \ $$| $$__/   |  $$$$$$ | $$  \ $$
+| $$  | $$| $$  | $$ /$$  \ $$| $$  | $$| $$       \____  $$| $$  | $$
+|  $$$$$$/|  $$$$$$/|  $$$$$$/|  $$$$$$/| $$$$$$$$ /$$$$$$$/|  $$$$$$$
+ \______/  \______/  \______/  \______/ |________/|_______/  \____  $$
+                                                                  | $$
+                                                                  | $$
+                                                                  |__/
+    ''', end="\n")
+    print("{:^70s}".format("Bem vindo ao:"))
+    print("{:^70s}".format("Jogo das Somas Esquecidas"))
+    print("="*70)
 
     print()
 
-    print("{:^50s}".format("Modos de jogo:\n"))
+    print("{:^70s}".format("Modos de jogo:\n"))
 
     print("Quantos tabuleiros?")
     print("[0] {:<8} [1] {:<8}".format("Um tabuleiro", "Dois tabuleiros"))
-
-    modo = funcoes.receber_e_validar_entrada_numeros("", 0, 1)
+    modo = funcoes.receber_e_validar_entrada_numeros("", 0, 1) # Recebe e valida o modo de jogo
 
     print("Qual o nível?")
     print("[0] {:<8} [1] {:<8} [2] {:<8}".format("Fácil", "Médio", "Difícil"))
-    nivel = funcoes.receber_e_validar_entrada_numeros("", 0, 2)
+    nivel = funcoes.receber_e_validar_entrada_numeros("", 0, 2) # Recebe e valida a entrada do nível
 
 
 
-    N_COLS = 1
-    N_LINHAS = 1
-    QNT_RAND_NUNS = 1
+    N_COLS = 1 # Número de colunas do tabuleiro
+    N_LINHAS = 1 # Número de linhas do tabuleiro
+    QNT_RAND_NUNS = 1 # Quantidade de números aleatórios
 
 
     if nivel == 0: # facil
@@ -86,7 +99,7 @@ def main():
         "matriz_aleatoria": funcoes.gerar_matriz_aleatoria(N_LINHAS, N_COLS, QNT_RAND_NUNS),
         "matriz_oculta": funcoes.gerar_matriz_oculta(N_LINHAS, N_COLS),
         "somaLados": [],
-        "rawSoma": {
+        "somaDoUsuario": {
             "linhas": [0] * N_LINHAS,
             "colunas": [0] * N_COLS
         }
@@ -98,7 +111,7 @@ def main():
         "matriz_aleatoria": funcoes.gerar_matriz_aleatoria(N_LINHAS, N_COLS, QNT_RAND_NUNS),
         "matriz_oculta": funcoes.gerar_matriz_oculta(N_LINHAS, N_COLS),
         "somaLados": [],
-        "rawSoma": {
+        "somaDoUsuario": {
             "linhas": [0] * N_LINHAS,
             "colunas": [0] * N_COLS
         }
@@ -107,10 +120,14 @@ def main():
 
     #################################
 
-    # }
 
+    print(tabuleiro1)
+
+    input()
+
+
+    # VARIÁVEIS DE JOGO
     quemJoga = 0 # 0 = jogador1, 1 = jogador2
-    # historico_jogadas
     rodada = 0 # contador de rodadas
 
     while funcoes.isMatrizCompleta(tabuleiro1["matriz_oculta"]) == False or funcoes.isMatrizCompleta(tabuleiro2["matriz_oculta"]): # enquanto não tiver todas as posições preenchidas
@@ -131,18 +148,18 @@ def main():
 
         print()
 
-        print("="*50)
-        print("{:^50s}".format("Rodada {:.0f}".format(rodada-1)))
-        print("{:^50s}".format("Quem joga: " + ("Jogador 1" if quemJoga == 0 else "Jogador 2")))
-        print("{:^50s}".format("Jogador 1 | {} x {} | Jogador 2".format(pontuacao["jogador1"], pontuacao["jogador2"])))
-        print("="*50)
+        print("="*70)
+        print("{:^70s}".format("Rodada {:.0f}".format(rodada-1)))
+        print("{:^70s}".format("Quem joga: " + ("Jogador 1" if quemJoga == 0 else "Jogador 2")))
+        print("{:^70s}".format("Jogador 1 | {} x {} | Jogador 2".format(pontuacao["jogador1"], pontuacao["jogador2"])))
+        print("="*70)
 
         funcoes.mostrar_matriz_com_resultados(tabuleiro["matriz_aleatoria"], show_sum=True, soma={
             "linhas": tabuleiro["somaLados"]["linhas"],
             "colunas": tabuleiro["somaLados"]["colunas"]
         })
         # print()
-        funcoes.mostrar_matriz(tabuleiro["matriz_oculta"], tabuleiro["rawSoma"])
+        funcoes.mostrar_matriz(tabuleiro["matriz_oculta"], tabuleiro["somaDoUsuario"])
 
         tipo = funcoes.receber_e_validar_entrada_tipo() # c = coluna; l = linha
 
@@ -168,43 +185,76 @@ def main():
             somaLado = tabuleiro["somaLados"]["linhas"][index]
 
         if somaLado == soma:
+            jaFoi = False
+
+            # verifica se a soma já foi feita
             if tipo == "c":
-                tabuleiro["rawSoma"]["colunas"][index] = soma
-                for i in range(N_COLS):
-                    tabuleiro["matriz_oculta"][i][index] = valor[i]
-            elif tipo == "l":
-                tabuleiro["rawSoma"]["linhas"][index] = soma
-                tabuleiro["matriz_oculta"][index] = valor
+                if tabuleiro["somaDoUsuario"]["colunas"][index] != 0:
+                    jaFoi = True
+            else:
+                if tabuleiro["somaDoUsuario"]["linhas"][index] != 0:
+                    jaFoi = True
             
-            pontuacao["jogador1" if quemJoga == 0 else "jogador2"] += 3 # adiciona 3 pontos em caso de acertar tudo
-
-            print("Parabéns, você acertou a soma!")
+            if jaFoi: # se já foi feita
+                print("Coluna já está completa!")
+                print("Você não ganhou nenhum ponto.")
+            else: # se ainda não foi feita
+                if tipo == "c":
+                    tabuleiro["somaDoUsuario"]["colunas"][index] = soma
+                    for i in range(N_COLS):
+                        tabuleiro["matriz_oculta"][i][index] = valor[i]
+                elif tipo == "l":
+                    tabuleiro["somaDoUsuario"]["linhas"][index] = soma
+                    tabuleiro["matriz_oculta"][index] = valor
+                print("Parabéns, você acertou a soma!")
+                print("Você ganhou 3 pontos!")
+                pontuacao["jogador1" if quemJoga == 0 else "jogador2"] += 3 # adiciona 3 pontos em caso de acertar tudo
         elif somaLado > soma:
+            jaFoi = False
+            x = y = maxValue = 0
+
             if tipo == "c":
                 maxValue = min(valor)
                 indexValue = valor.index(maxValue)
-                tabuleiro["matriz_oculta"][indexValue][index] = maxValue
+                x = indexValue
+                y = index
             elif tipo == "l":
                 maxValue = min(valor)
                 indexValue = valor.index(maxValue)
-                tabuleiro["matriz_oculta"][index][indexValue] = maxValue
-
-            pontuacao["jogador1" if quemJoga == 0 else "jogador2"] += 1 # adiciona 1 ponto em caso de mostrar uma casa
-
-            print("Você errou, a soma é maior!")
+                x = index
+                y = indexValue
+                
+            if tabuleiro["matriz_oculta"][x][y] != "><": # se a posição já estiver preenchida
+                jaFoi = True
+                print("A soma é maior!")
+                print("Como você não abriu uma casa nova, não ganhou ponto.")
+            else:
+                pontuacao["jogador1" if quemJoga == 0 else "jogador2"] += 1 # adiciona 1 ponto em caso de mostrar uma casa
+                tabuleiro["matriz_oculta"][x][y] = maxValue
+                print("A soma é maior!")
+                print("Você ganhou 1 ponto por mostrar uma casa!")
         else:
+            x = y = maxValue = 0
             if tipo == "c":
                 maxValue = max(valor)
                 indexValue = valor.index(maxValue)
-                tabuleiro["matriz_oculta"][indexValue][index] = maxValue
+                x = indexValue
+                y = index
             elif tipo == "l":
                 maxValue = max(valor)
                 indexValue = valor.index(maxValue)
-                tabuleiro["matriz_oculta"][index][indexValue] = maxValue
+                x = index
+                y = indexValue
 
-            pontuacao["jogador1" if quemJoga == 0 else "jogador2"] += 1 # adiciona 1 pontos em caso de mostrar uma casa
-            print("Você errou, a soma é menor!")
-
+            if tabuleiro["matriz_oculta"][x][y] != "><": # se a posição já estiver preenchida
+                jaFoi = True
+                print("A soma é menor!")
+                print("Como você não abriu uma casa nova, não ganhou ponto.")
+            else:
+                pontuacao["jogador1" if quemJoga == 0 else "jogador2"] += 1 # adiciona 1 ponto em caso de mostrar uma casa
+                tabuleiro["matriz_oculta"][x][y] = maxValue
+                print("A soma é menor!")
+                print("Você ganhou 1 ponto por mostrar uma casa!")
 
         # Verifica o próximo a jogar
         if quemJoga == 0: # se quem jogou foi o jogador 1
@@ -218,9 +268,9 @@ def main():
     
     funcoes.animacao_inicio() # mostra a animação de inicio
 
-    print("="*50)
+    print("="*70)
     print("{:^50}".format("FIM DO JOGO!"))
-    print("="*50)
+    print("="*70)
 
     funcoes.clear() # limpa a tela
 
