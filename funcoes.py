@@ -1,5 +1,6 @@
 import os
 import random
+from find import find
 
 import time
 
@@ -37,7 +38,7 @@ def gerar_lista_aleatoria(v_min, v_max, size):
 
     for i in range(size):
         s = lista_ordenada[random.randint(0, len(lista_ordenada) - 1)] # retorna um valor aleatorio entre 0 e o tamanho da lista
-        lista_ordenada.pop(lista_ordenada.index(s)) # remove o valor da lista ordenada
+        lista_ordenada.pop(find(s, lista_ordenada)) # remove o valor da lista ordenada
 
         shuffled_list.append(s) # adiciona o valor na lista aleatoria
     return shuffled_list
