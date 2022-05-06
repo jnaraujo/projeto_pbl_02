@@ -99,10 +99,6 @@ def main():
         "matriz_aleatoria": funcoes.gerar_matriz_aleatoria(N_LINHAS, N_COLS, QNT_RAND_NUNS), # matriz aleatoria gerada pelo sistema
         "matriz_oculta": funcoes.gerar_matriz_oculta(N_LINHAS, N_COLS), # matriz inicialmente oculta que é mostrada na tela; é modificada com o tempo
         "somaLados": [], # quando vale a soma das colunas e linhas
-        "somaDoUsuario": { # somas que o usuário fez
-            "linhas": [0] * N_LINHAS,
-            "colunas": [0] * N_COLS
-        }
     }
     tabuleiro1["somaLados"] = funcoes.somarLadosMatriz(tabuleiro1["matriz_aleatoria"])
 
@@ -111,10 +107,6 @@ def main():
         "matriz_aleatoria": funcoes.gerar_matriz_aleatoria(N_LINHAS, N_COLS, QNT_RAND_NUNS),
         "matriz_oculta": funcoes.gerar_matriz_oculta(N_LINHAS, N_COLS),
         "somaLados": [],
-        "somaDoUsuario": {
-            "linhas": [0] * N_LINHAS,
-            "colunas": [0] * N_COLS
-        }
     }
     tabuleiro2["somaLados"] = funcoes.somarLadosMatriz(tabuleiro2["matriz_aleatoria"])
 
@@ -187,12 +179,14 @@ def main():
         if somaLado == soma:
             jaFoi = False
 
+            somaDoUsuario = funcoes.verificar_somas_matriz(tabuleiro["matriz_oculta"])
+
             # verifica se a soma já foi feita
             if tipo == "c":
-                if tabuleiro["somaDoUsuario"]["colunas"][index] != 0:
+                if somaDoUsuario["colunas"][index] != 0:
                     jaFoi = True
             else:
-                if tabuleiro["somaDoUsuario"]["linhas"][index] != 0:
+                if somaDoUsuario["linhas"][index] != 0:
                     jaFoi = True
             
             if jaFoi: # se já foi feita
@@ -200,11 +194,9 @@ def main():
                 print("Você não ganhou nenhum ponto.")
             else: # se ainda não foi feita
                 if tipo == "c":
-                    tabuleiro["somaDoUsuario"]["colunas"][index] = soma
                     for i in range(N_COLS):
                         tabuleiro["matriz_oculta"][i][index] = valor[i]
                 elif tipo == "l":
-                    tabuleiro["somaDoUsuario"]["linhas"][index] = soma
                     tabuleiro["matriz_oculta"][index] = valor
                 print("Parabéns, você acertou a soma!")
                 print("Você ganhou 3 pontos!")
