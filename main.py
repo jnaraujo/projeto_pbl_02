@@ -96,10 +96,10 @@ def main():
 
     # TABULEIRO 1
     tabuleiro1 = {
-        "matriz_aleatoria": funcoes.gerar_matriz_aleatoria(N_LINHAS, N_COLS, QNT_RAND_NUNS),
-        "matriz_oculta": funcoes.gerar_matriz_oculta(N_LINHAS, N_COLS),
-        "somaLados": [],
-        "somaDoUsuario": {
+        "matriz_aleatoria": funcoes.gerar_matriz_aleatoria(N_LINHAS, N_COLS, QNT_RAND_NUNS), # matriz aleatoria gerada pelo sistema
+        "matriz_oculta": funcoes.gerar_matriz_oculta(N_LINHAS, N_COLS), # matriz inicialmente oculta que é mostrada na tela; é modificada com o tempo
+        "somaLados": [], # quando vale a soma das colunas e linhas
+        "somaDoUsuario": { # somas que o usuário fez
             "linhas": [0] * N_LINHAS,
             "colunas": [0] * N_COLS
         }
@@ -159,7 +159,7 @@ def main():
             "colunas": tabuleiro["somaLados"]["colunas"]
         })
         # print()
-        funcoes.mostrar_matriz(tabuleiro["matriz_oculta"], tabuleiro["somaDoUsuario"])
+        funcoes.mostrar_matriz(tabuleiro["matriz_oculta"], funcoes.verificar_somas_matriz(tabuleiro["matriz_oculta"]))
 
         tipo = funcoes.receber_e_validar_entrada_tipo() # c = coluna; l = linha
 

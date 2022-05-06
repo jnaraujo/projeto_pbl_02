@@ -158,54 +158,105 @@ def mostrar_matriz(matriz, soma={"linhas":[], "colunas": []}):
     FUNÇÕES DE VALIDAÇÕES DE DADOS
 '''
 
-def validar_entrada_numeros(entrada, v_min, v_max):
+'''
+
+    "somaDoUsuario": {
+            "linhas": [0] * N_LINHAS,
+            "colunas": [0] * N_COLS
+        }
+'''
+
+def verificar_somas_matriz(matriz):
+    length = len(matriz)
+    somasFinais = {
+        "linhas": [0]*length,
+        "colunas": [0]*length
+    }
+
+    somas = {
+        "linhas": [0]*length,
+        "colunas": [0]*length
+    }
+
+    for r in range(length):
+        for c in range(length):
+            col = matriz[r][c]
+
+            # verifica a linha
+            if type(col) != int: # se for um área nao revelada
+                somas["linhas"][r] = -999999
+                somas["colunas"][c] = -999999
+            else:
+                somas["linhas"][r] += col
+                somas["colunas"][c] += col
+
+    for i in range(length):
+        if somas["linhas"][i] > 0:
+            somasFinais["linhas"][i] = somas["linhas"][i]
+        
+        if somas["colunas"][i] > 0:
+            somasFinais["colunas"][i] = somas["colunas"][i]
+    
+    return somasFinais
+
+def eh_valida_entrada_numero_valida(entrada, v_min, v_max):
     if entrada > v_max or entrada < v_min:
         return False
     return True
 
 def receber_e_validar_entrada_numeros(texto_entrada, v_min, v_max):
-    
-    try:
-        entrada = int(input(texto_entrada))
+    continuar = True
+    entrada = 0
 
-        while validar_entrada_numeros(entrada, v_min, v_max) == False:
-            print("Entrada inválida!")
+    while continuar:
+        try:
             entrada = int(input(texto_entrada))
-        return entrada
-    except ValueError:
-        print("Entrada inválida!")
-        return receber_e_validar_entrada_numeros(texto_entrada, v_min, v_max)
-def validar_entrada_tipo(entrada):
-    if entrada not in ["c", "l"]:
-        return False
-    return True
+            if eh_valida_entrada_numero_valida(entrada, v_min, v_max):
+                continuar = False
+            else:
+                print("Entrada inválida!")
+        except ValueError:
+            print("Entrada inválida!")
+    return entrada # retorna a entrada validada
 
 
-def validar_entrada_col_row(entrada, n_cols):
+def eh_valida_entrada_col_row(entrada, n_cols):
     if entrada < 1 or entrada > n_cols:
         return False
     return True 
 
 def receber_e_validar_entrada_col_row(tipo, n_cols, n_rows):
-    try:
-        entrada = int(input("Digite o lado da {}: ".format("coluna" if tipo == "c" else "linha")))
+    continuar = True
+    entrada = ""
 
-        while validar_entrada_col_row(entrada, n_cols) == False:
-            print("Entrada inválida!")
+    while continuar:
+        try:
             entrada = int(input("Digite o lado da {}: ".format("coluna" if tipo == "c" else "linha")))
-        return entrada
-    except ValueError:
-        print("Entrada inválida!")
-        return receber_e_validar_entrada_col_row(tipo, n_cols, n_rows)
 
-def receber_e_validar_entrada_tipo():
-    try:
-        entrada = input("Onde você deseja somar ( c: coluna ou l: linha ): ")[0].lower()
-
-        while validar_entrada_tipo(entrada) == False:
+            if eh_valida_entrada_col_row(entrada, n_cols):
+                continuar = False
+            else:
+                print("Entrada inválida!")
+        except ValueError:
             print("Entrada inválida!")
+    return entrada
+
+def eh_valida_entrada_tipo(entrada):
+    if entrada not in ["c", "l"]:
+        return False
+    return True
+def receber_e_validar_entrada_tipo():
+    continuar = True
+    entrada = ""
+
+    while continuar:
+        try:
             entrada = input("Onde você deseja somar ( c: coluna ou l: linha ): ")[0].lower()
-        return entrada
-    except ValueError:
-        print("Entrada inválida!")
-        return receber_e_validar_entrada_tipo()
+
+            if eh_valida_entrada_tipo(entrada):
+                continuar = False
+            else:
+                print("Entrada inválida!")
+        except ValueError:
+            print("Entrada inválida!")
+    return entrada
