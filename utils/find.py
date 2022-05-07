@@ -1,11 +1,15 @@
 def find(elm, arr):
-    arr = sorted(arr.copy())
+    '''
+        Função que procura um elemento em um array e retorna o index do elemento encontrado.
+        Se não encontrar, retorna -1.
+    '''
+    arr = sorted(arr.copy()) # ordena uma cópia do array
     
-    low = 0
-    high = len(arr) - 1
+    low = 0 # define o index inicial
+    high = len(arr) - 1 # define o index final
 
-    while low <= high:
-        mid = (low + high) // 2
+    while low <= high: # enquanto o index inicial for menor ou igual ao index final
+        mid = (low + high) // 2 # define o index do meio (aproximado para baixo)
 
         if arr[mid] == elm: # se elm for igual ao elemento do meio, retorna o index
             return mid
