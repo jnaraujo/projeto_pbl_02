@@ -13,7 +13,7 @@
 
 ########## LIBS ##########
 
-import funcoes
+from utils import funcoes, tela
 import os
 
 
@@ -42,9 +42,9 @@ tipo_termino = "soma" # como o jogador desejar terminar o jogo; "soma" ou "round
 
 def main():
 
-    # funcoes.animacao_inicio()
+    # tela.animacao_inicio()
 
-    funcoes.clear()
+    tela.clear()
 
     print("="*70)
     print('''
@@ -135,7 +135,7 @@ def main():
     deveAnalisarResultados = False # se deve analisar os resultados da aproximação
 
     while not funcoes.have_the_game_finished(tabuleiro1["matriz_oculta"], tabuleiro2["matriz_oculta"], rodada, max_rounds, tipo_termino): # enquanto não tiver todas as posições preenchidas
-        funcoes.clear()
+        tela.clear()
 
         playCount += 1
         if playCount == 3: # se for a segunda rodada
@@ -144,8 +144,6 @@ def main():
 
         if deveAnalisarResultados == False: # se for uma partida válida
             tabuleiro = {}
-
-            print(rodada, quemJoga)
 
             if quemJoga == 0: # quando for o jogador 1 de novo
                 rodada += 1 # adiciona 1 as rodadas
@@ -166,12 +164,12 @@ def main():
             print("{:^70s}".format("Jogador 1 | {} x {} | Jogador 2".format(pontuacao["jogador1"], pontuacao["jogador2"])))
             print("="*70)
 
-            funcoes.mostrar_matriz_com_resultados(tabuleiro["matriz_aleatoria"], show_sum=True, soma={
+            tela.mostrar_matriz_com_resultados(tabuleiro["matriz_aleatoria"], show_sum=True, soma={
                 "linhas": tabuleiro["somaLados"]["linhas"],
                 "colunas": tabuleiro["somaLados"]["colunas"]
             })
-            # print()
-            funcoes.mostrar_matriz(tabuleiro["matriz_oculta"], funcoes.verificar_somas_matriz(tabuleiro["matriz_oculta"]))
+
+            tela.mostrar_matriz(tabuleiro["matriz_oculta"], funcoes.verificar_somas_matriz(tabuleiro["matriz_oculta"]))
 
             tipo = funcoes.receber_e_validar_entrada_tipo() # c = coluna; l = linha
 
@@ -259,7 +257,7 @@ def main():
 
                 funcoes.analisar_e_dar_pontos(tabuleiro, index, tipo, pontuacao, 1, soma, N_COLS, foiEmpate=True)
 
-                funcoes.clear()
+                tela.clear()
                 
                 print("Empate!")
 
@@ -267,15 +265,15 @@ def main():
 
         input("\nAperte enter para continuar:")
 
-    funcoes.clear() # limpa a tela
+    tela.clear() # limpa a tela
     
-    funcoes.animacao_inicio() # mostra a animação de inicio
+    tela.animacao_inicio() # mostra a animação de inicio
 
     print("="*70)
     print("{:^50}".format("FIM DO JOGO!"))
     print("="*70)
 
-    funcoes.clear() # limpa a tela
+    tela.clear() # limpa a tela
 
     if pontuacao["jogador1"] > pontuacao["jogador2"]:
         historico_jogadas["vencedor"] = "1"
@@ -289,7 +287,7 @@ def main():
 
     verHistorico = input("Deseja ver o histórico de jogadas? (s/n)")[0].lower() == "s"
     if verHistorico:
-        funcoes.mostrar_historico(historico_jogadas)
+        tela.mostrar_historico(historico_jogadas)
 
 
 if __name__ == "__main__":
