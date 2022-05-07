@@ -1,0 +1,2 @@
+nao permitir que o usuario tente jogar o msm valor dnv
+impedir q ele farme pontos sempre colocando no msm lugar

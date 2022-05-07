@@ -1,5 +1,5 @@
 import random
-from find import find
+from utils.find import find
 
 def gerar_matriz(n_linhas, n_cols):
     """
@@ -10,23 +10,32 @@ def gerar_matriz(n_linhas, n_cols):
     return matriz
 
 def gerar_matriz_oculta(n_linhas, n_cols):
+    '''
+    Função que gera uma matriz oculta de n_linhas x n_cols.
+    '''
     linha = ["><"] * n_cols
     matriz = [linha.copy() for x in range(n_linhas)]
     return matriz
 
 def somarLadosMatriz(matriz):
-    somas_colunas = [0] * len(matriz[0])
-    somas_linhas = []
-    for linha in matriz:
-        for i in range(len(linha)):
-            somas_colunas[i] += linha[i]
-        somas_linhas.append(sum(linha))
+    '''
+    Função que soma os lados de uma matriz.
+    '''
+    somas_colunas = [0] * len(matriz[0]) # lista de somas das colunas
+    somas_linhas = [] # lista de somas das linhas
+    for linha in matriz: # para cada linha
+        for i in range(len(linha)): # para cada coluna
+            somas_colunas[i] += linha[i]  # soma a coluna
+        somas_linhas.append(sum(linha)) # adiciona a soma da linha
     return {
         "colunas": somas_colunas,
         "linhas": somas_linhas
     }
 
 def gerar_lista_aleatoria(v_min, v_max, size):
+    '''
+    Função que gera uma lista aleatória com valores entre v_min e v_max.
+    '''
     lista_ordenada = [i for i in range(v_min, v_max)]
     shuffled_list = []
 
@@ -38,20 +47,25 @@ def gerar_lista_aleatoria(v_min, v_max, size):
     return shuffled_list
 
 def gerar_matriz_aleatoria(n_linhas, n_cols, max_val):
-    matriz = gerar_matriz(n_linhas, n_cols)
+    '''
+    Função que gera uma matriz aleatória de n_linhas x n_cols.
+    '''
+    matriz = gerar_matriz(n_linhas, n_cols) # gera a matriz
 
-    valores_aleatorio = gerar_lista_aleatoria(1, max_val+1, n_linhas * n_cols)
-    for i in range(n_linhas):
-        for j in range(n_cols):
-            matriz[i][j] = valores_aleatorio[i * n_cols + j]
+    valores_aleatorio = gerar_lista_aleatoria(1, max_val+1, n_linhas * n_cols) # gera uma lista aleatória com número não repetidos
+    for i in range(n_linhas): # para cada linha
+        for j in range(n_cols): # para cada coluna
+            matriz[i][j] = valores_aleatorio[i * n_cols + j] # adiciona o valor na matriz
     return matriz
 
 
-
 def isMatrizCompleta(matriz):
+    '''
+    Função que verifica se uma matriz está completa.
+    '''
     for row in matriz:
         for col in row:
-            if not str(col).isnumeric():
+            if not str(col).isnumeric(): # se houver um área nao revelada
                 return False
     return True
 
@@ -60,15 +74,22 @@ def isMatrizCompleta(matriz):
 '''
 
 def have_the_game_finished(matriz_oculta_tabuleiro1, matriz_oculta_tabuleiro2, rounds, max_rounds, tipo_termino="soma"):
-    if tipo_termino == "soma":
-        if isMatrizCompleta(matriz_oculta_tabuleiro1) == True or isMatrizCompleta(matriz_oculta_tabuleiro2):
+    '''
+    Função que verifica se o jogo terminou.
+    '''
+    if tipo_termino == "soma": # se o jogo terminar somente por soma
+        if isMatrizCompleta(matriz_oculta_tabuleiro1) == True or isMatrizCompleta(matriz_oculta_tabuleiro2): # se algumas das matrizes estiver completa
             return True
-    else:
-        if rounds >= max_rounds or isMatrizCompleta(matriz_oculta_tabuleiro1) == True or isMatrizCompleta(matriz_oculta_tabuleiro2):
+    else: # se o jogo terminar por numero de rodadas OU soma
+        if rounds >= max_rounds or isMatrizCompleta(matriz_oculta_tabuleiro1) == True or isMatrizCompleta(matriz_oculta_tabuleiro2): # se estiver completado o número de rodadas OU se algumas das matrizes estiver completa
             return True
     return False
 
 def pegarMaisProximo(historico, matriz_aleatoria1, matriz_aleatoria2):
+    '''
+        Função que pega as ultimas jogadas do hitórico e verifica qual dos jogadores chegou mais próximo da soma da coluna/linha.
+    '''
+
     ultimaJogadaJogador1 = historico["jogador1"][-1] # ultima jogada do jogador 1
     ultimaJogadaJogador2 = historico["jogador2"][-1] # ultima jogada do jogador 2
 
@@ -77,27 +98,27 @@ def pegarMaisProximo(historico, matriz_aleatoria1, matriz_aleatoria2):
     valorSoma1 = []
     valorSoma2 = []
 
-    if ultimaJogadaJogador1["tipo"] == "c":
-        valorSoma1 = [matriz_aleatoria1[i][ultimaJogadaJogador1["index"]] for i in range(N_COLS)]
-    else:
-        valorSoma1 = [matriz_aleatoria1[ultimaJogadaJogador1["index"]][i] for i in range(N_COLS)]
+    if ultimaJogadaJogador1["tipo"] == "c": # se a ultima jogada do jogador 1 for coluna
+        valorSoma1 = [matriz_aleatoria1[i][ultimaJogadaJogador1["index"]] for i in range(N_COLS)] # pega os valores da coluna
+    else: # se a ultima jogada do jogador 1 for linha
+        valorSoma1 = [matriz_aleatoria1[ultimaJogadaJogador1["index"]][i] for i in range(N_COLS)] # pega os valores da linha
     
-    if ultimaJogadaJogador2["tipo"] == "c":
-        valorSoma2 = [matriz_aleatoria2[i][ultimaJogadaJogador2["index"]] for i in range(N_COLS)]
-    else:
-        valorSoma2 = [matriz_aleatoria2[ultimaJogadaJogador2["index"]][i] for i in range(N_COLS)]
+    if ultimaJogadaJogador2["tipo"] == "c": # se a ultima jogada do jogador 2 for coluna
+        valorSoma2 = [matriz_aleatoria2[i][ultimaJogadaJogador2["index"]] for i in range(N_COLS)] # pega os valores da coluna
+    else: # se a ultima jogada do jogador 2 for linha
+        valorSoma2 = [matriz_aleatoria2[ultimaJogadaJogador2["index"]][i] for i in range(N_COLS)] # pega os valores da linha
     
-    valorSoma1 = sum(valorSoma1)
-    valorSoma2 = sum(valorSoma2)
+    valorSoma1 = sum(valorSoma1) # soma os valores da coluna/linha
+    valorSoma2 = sum(valorSoma2) # soma os valores da coluna/linha
 
-    distanciaJogador1 = abs(valorSoma1 - ultimaJogadaJogador1["soma"])
-    distanciaJogador2 = abs(valorSoma2 - ultimaJogadaJogador2["soma"])
+    distanciaJogador1 = abs(valorSoma1 - ultimaJogadaJogador1["soma"]) # distancia do jogador 1
+    distanciaJogador2 = abs(valorSoma2 - ultimaJogadaJogador2["soma"]) # distancia do jogador 2
 
-    if distanciaJogador1 < distanciaJogador2:
+    if distanciaJogador1 < distanciaJogador2: # se o jogador 1 estiver mais proximo
         return "jogador1"
-    elif distanciaJogador1 > distanciaJogador2:
+    elif distanciaJogador1 > distanciaJogador2: # se o jogador 2 estiver mais proximo
         return "jogador2"
-    else:
+    else: # se os jogadores estiverem na mesma distancia
         return "empate"
 
 # pegarMaisProximo({
@@ -124,51 +145,64 @@ def pegarMaisProximo(historico, matriz_aleatoria1, matriz_aleatoria2):
 
 
 def verificar_somas_matriz(matriz):
-    length = len(matriz)
+    '''
+        Função que calcula e retorna se os valores já revelados formam somas.
+    '''
+    length = len(matriz) # pega o tamanho da matriz
     somasFinais = {
         "linhas": [0]*length,
         "colunas": [0]*length
-    }
+    } # cria um dicionario para as somas finais
 
     somas = {
         "linhas": [0]*length,
         "colunas": [0]*length
-    }
+    } # cria um dicionario para as somas
 
-    for r in range(length):
-        for c in range(length):
-            col = matriz[r][c]
+    for r in range(length): # para cada linha
+        for c in range(length): # para cada coluna
+            col = matriz[r][c] # pega o valor da coluna
 
             # verifica a linha
             if type(col) != int: # se for um área nao revelada
-                somas["linhas"][r] = -999999
+                somas["linhas"][r] = -999999 # valor muito baixa para invalidar resultado se pelo menos um item não estiver completo
                 somas["colunas"][c] = -999999
-            else:
+            else: # se for um valor revelado
                 somas["linhas"][r] += col
                 somas["colunas"][c] += col
 
     for i in range(length):
-        if somas["linhas"][i] > 0:
-            somasFinais["linhas"][i] = somas["linhas"][i]
+        if somas["linhas"][i] > 0: # se a soma for maior que 0
+            somasFinais["linhas"][i] = somas["linhas"][i] # pega a soma
         
-        if somas["colunas"][i] > 0:
-            somasFinais["colunas"][i] = somas["colunas"][i]
+        if somas["colunas"][i] > 0: # se a soma for maior que 0
+            somasFinais["colunas"][i] = somas["colunas"][i] # pega a soma
     
     return somasFinais
 
 def eh_valida_entrada_numero_valida(entrada, v_min, v_max):
-    if entrada > v_max or entrada < v_min:
+    '''
+        Função que verifica se a entrada é um número válido.
+    '''
+    if entrada > v_max or entrada < v_min: # se a entrada for maior que o valor máximo ou menor que o valor mínimo
         return False
     return True
 
 def receber_e_validar_entrada_numeros(texto_entrada, v_min, v_max):
+    '''
+        Função que recebe e valida uma entrada de números.
+
+        texto_entrada: texto a ser exibido para o usuário no input
+        v_min: valor mínimo
+        v_max: valor máximo
+    '''
     continuar = True
     entrada = 0
 
-    while continuar:
+    while continuar: # enquanto a entrada não for válida
         try:
-            entrada = int(input(texto_entrada))
-            if eh_valida_entrada_numero_valida(entrada, v_min, v_max):
+            entrada = int(input(texto_entrada)) # recebe a entrada
+            if eh_valida_entrada_numero_valida(entrada, v_min, v_max): # se a entrada for válida
                 continuar = False
             else:
                 print("Entrada inválida!")
@@ -178,19 +212,25 @@ def receber_e_validar_entrada_numeros(texto_entrada, v_min, v_max):
 
 
 def eh_valida_entrada_col_row(entrada, n_cols):
-    if entrada < 1 or entrada > n_cols:
+    '''
+        Função que verifica se a entrada é uma coluna ou linha válida.
+    '''
+    if entrada < 1 or entrada > n_cols: # se a entrada for maior que o valor máximo ou menor que o valor mínimo
         return False
     return True 
 
 def receber_e_validar_entrada_col_row(tipo, n_cols, n_rows):
+    '''
+        Função que recebe e valida uma entrada de coluna ou linha.
+    '''
     continuar = True
     entrada = ""
 
-    while continuar:
+    while continuar: # enquanto a entrada não for válida
         try:
-            entrada = int(input("Digite o lado da {}: ".format("coluna" if tipo == "c" else "linha")))
+            entrada = int(input("Digite o lado da {}: ".format("coluna" if tipo == "c" else "linha"))) # recebe a entrada
 
-            if eh_valida_entrada_col_row(entrada, n_cols):
+            if eh_valida_entrada_col_row(entrada, n_cols): # se a entrada for válida
                 continuar = False
             else:
                 print("Entrada inválida!")
@@ -199,18 +239,26 @@ def receber_e_validar_entrada_col_row(tipo, n_cols, n_rows):
     return entrada
 
 def eh_valida_entrada_tipo(entrada):
-    if entrada not in ["c", "l"]:
+    ''''
+        Função que verifica se a entrada é uma coluna ou linha.
+    '''
+    if entrada not in ["c", "l"]: # se a entrada não for uma coluna (c) ou linha (l)
         return False
     return True
+
 def receber_e_validar_entrada_tipo():
+    '''
+        Função que recebe e valida uma entrada de tipo.
+        Deve ser uma coluna (c) ou linha (l)
+    '''
     continuar = True
     entrada = ""
 
     while continuar:
         try:
-            entrada = input("Onde você deseja somar ( c: coluna ou l: linha ): ")[0].lower()
+            entrada = input("Onde você deseja somar ( c: coluna ou l: linha ): ")[0].lower() # recebe a entrada. pega somente o primeiro caracter e converte para minúsculo
 
-            if eh_valida_entrada_tipo(entrada):
+            if eh_valida_entrada_tipo(entrada): # se a entrada for válida
                 continuar = False
             else:
                 print("Entrada inválida!")
@@ -220,39 +268,49 @@ def receber_e_validar_entrada_tipo():
 
 
 def dar_pontos(jogador : int, pontos, pontuacao):
+    '''
+        Função que dá pontos ao jogador.
+    '''
     pontuacao["jogador1" if jogador == 0 else "jogador2"] += pontos
     
 
 def analisar_e_dar_pontos(tabuleiro, index, tipo, pontuacao, quemJoga, soma, N_COLS, foiEmpate=False):
-    if tipo == "c": # se for coluna
-        listaDoLado = [tabuleiro["matriz_aleatoria"][i][index] for i in range(N_COLS)]
-        somaLado = tabuleiro["somaLados"]["colunas"][index]
-    else: # se for linha
-        listaDoLado = [tabuleiro["matriz_aleatoria"][index][i] for i in range(N_COLS)]
-        somaLado = tabuleiro["somaLados"]["linhas"][index]
+    '''
+        Função que analisa e dá pontos ao jogador.
+    '''
+    listaDoLado = [] # a lista da linha ou coluna
+    somaLado = 0 # soma do lado da linha ou coluna
 
-    if somaLado == soma:
+
+    if tipo == "c": # se for coluna
+        listaDoLado = [tabuleiro["matriz_aleatoria"][i][index] for i in range(N_COLS)] # pega a lista da coluna
+        somaLado = tabuleiro["somaLados"]["colunas"][index] # pega a soma da coluna
+    else: # se for linha
+        listaDoLado = [tabuleiro["matriz_aleatoria"][index][i] for i in range(N_COLS)] # pega a lista da linha
+        somaLado = tabuleiro["somaLados"]["linhas"][index] # pega a soma da linha
+
+    if somaLado == soma: # se o jogador acertou a soma da linha ou coluna
         if tipo == "c":
             for i in range(N_COLS):
-                tabuleiro["matriz_oculta"][i][index] = listaDoLado[i]
+                tabuleiro["matriz_oculta"][i][index] = listaDoLado[i] # coloca os números na coluna da matriz oculta
         elif tipo == "l":
-            tabuleiro["matriz_oculta"][index] = listaDoLado
+            tabuleiro["matriz_oculta"][index] = listaDoLado # coloca os números na linha matriz oculta
 
         print("Parabéns! Ganhou 3 pontos!")
 
         dar_pontos(quemJoga, 3, pontuacao)	# adiciona 3 pontos em caso de acertar tudo
 
-    elif somaLado > soma:
-        x = y = maxValue = 0
+    elif somaLado > soma: # se a soma do jogador for maior que a soma da coluna ou linha
+        x = y = minValue = 0
 
         if tipo == "c":
-            maxValue = min(listaDoLado)
-            indexValue = listaDoLado.index(maxValue)
+            minValue = min(listaDoLado) # pega o menor número da coluna
+            indexValue = listaDoLado.index(minValue) # pega o indice do minValor
             x = indexValue
             y = index
         elif tipo == "l":
-            maxValue = min(listaDoLado)
-            indexValue = listaDoLado.index(maxValue)
+            minValue = min(listaDoLado) # pega o menor número da coluna
+            indexValue = listaDoLado.index(minValue) # pega o indice do minValor
             x = index
             y = indexValue
             
@@ -262,19 +320,19 @@ def analisar_e_dar_pontos(tabuleiro, index, tipo, pontuacao, quemJoga, soma, N_C
         else:
             dar_pontos(quemJoga, 1, pontuacao) # adiciona 1 ponto em caso de mostrar uma casa
 
-            tabuleiro["matriz_oculta"][x][y] = maxValue
+            tabuleiro["matriz_oculta"][x][y] = minValue
             print("A soma é maior!")
             print("Ganhou 1 ponto por mostrar uma casa!")
     else:
         x = y = maxValue = 0
         if tipo == "c":
-            maxValue = max(listaDoLado)
-            indexValue = listaDoLado.index(maxValue)
+            maxValue = max(listaDoLado) # pega o maior número da coluna
+            indexValue = listaDoLado.index(maxValue) # pega o indice do maxValor
             x = indexValue
             y = index
         elif tipo == "l":
-            maxValue = max(listaDoLado)
-            indexValue = listaDoLado.index(maxValue)
+            maxValue = max(listaDoLado) # pega o maior número da coluna
+            indexValue = listaDoLado.index(maxValue) # pega o indice do maxValor
             x = index
             y = indexValue
 

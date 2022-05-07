@@ -41,7 +41,6 @@ tipo_termino = "soma" # como o jogador desejar terminar o jogo; "soma" ou "round
 
 
 def main():
-
     # tela.animacao_inicio()
 
     tela.clear()
@@ -65,6 +64,20 @@ def main():
     print("="*70)
 
     print()
+
+    print("Deseja ver as regras?")
+    print("[0] {:<8} [1] {:<8}".format("Sim, ver regras", "Não"))
+    ver_regras = funcoes.receber_e_validar_entrada_numeros("", 0, 1)
+
+    if ver_regras == 0:
+        tela.mostrar_regras()
+        input("Pressione ENTER para continuar...")
+        tela.clear()
+
+
+    ########## INICIALIZAÇÃO ##########
+
+    # Modos do jogo
 
     print("{:^70s}".format("Modos de jogo:\n"))
 
@@ -288,6 +301,13 @@ def main():
     verHistorico = input("Deseja ver o histórico de jogadas? (s/n)")[0].lower() == "s"
     if verHistorico:
         tela.mostrar_historico(historico_jogadas)
+
+    tela.clear() # limpa a tela
+
+    print("="*70)
+    print("{:^50}".format("FIM DO JOGO!"))
+    print("{:^50}".format("Obrigado por jogar!"))
+    print("="*70)
 
 
 if __name__ == "__main__":
