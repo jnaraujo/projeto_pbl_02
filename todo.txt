@@ -1,1 +1,1 @@
-quando uma coluna ou linha for resolvida de forma secundária, mostrar a soma também
+terminar partida pela soma e por rounds

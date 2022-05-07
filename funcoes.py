@@ -158,13 +158,15 @@ def mostrar_matriz(matriz, soma={"linhas":[], "colunas": []}):
     FUNÇÕES DE VALIDAÇÕES DE DADOS
 '''
 
-'''
+def have_the_game_finished(matriz_oculta_tabuleiro1, matriz_oculta_tabuleiro2, rounds, max_rounds, tipo_termino="soma"):
+    if tipo_termino == "soma":
+        if isMatrizCompleta(matriz_oculta_tabuleiro1) == True or isMatrizCompleta(matriz_oculta_tabuleiro2):
+            return True
+    else:
+        if rounds >= max_rounds or isMatrizCompleta(matriz_oculta_tabuleiro1) == True or isMatrizCompleta(matriz_oculta_tabuleiro2):
+            return True
+    return False
 
-    "somaDoUsuario": {
-            "linhas": [0] * N_LINHAS,
-            "colunas": [0] * N_COLS
-        }
-'''
 
 def verificar_somas_matriz(matriz):
     length = len(matriz)

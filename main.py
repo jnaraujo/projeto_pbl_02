@@ -21,6 +21,10 @@ import os
 
 ########## Variáveis ##########
 
+N_COLS = 1 # Número de colunas do tabuleiro
+N_LINHAS = 1 # Número de linhas do tabuleiro
+QNT_RAND_NUNS = 1 # Quantidade de números aleatórios
+
 historico_jogadas = {
     "jogador1": [],
     "jogador2": [],
@@ -31,8 +35,10 @@ pontuacao = {
     "jogador2": 0,
 }
 
-def clear():
-    os.system("clear")
+max_rounds = 0
+
+tipo_termino = "soma" # como o jogador desejar terminar o jogo; "soma" ou "round"
+
 
 def main():
 
@@ -71,11 +77,20 @@ def main():
     nivel = funcoes.receber_e_validar_entrada_numeros("", 0, 2) # Recebe e valida a entrada do nível
 
 
+    print("Como você deseja terminar a partida?")
+    print("[0] Quando alguem completar o tabuleiro")
+    print("[1] Por número de rounds")
+    termino = funcoes.receber_e_validar_entrada_numeros("", 0, 1) # Recebe e valida a entrada do termino
 
-    N_COLS = 1 # Número de colunas do tabuleiro
-    N_LINHAS = 1 # Número de linhas do tabuleiro
-    QNT_RAND_NUNS = 1 # Quantidade de números aleatórios
-
+    if termino == 0: # Se o termino for por completar o tabuleiro
+        tipo_termino = "soma"
+        max_rounds = 99999
+    elif termino == 1: # Se o termino for por número de rounds
+        tipo_termino = "round"
+        max_rounds = funcoes.receber_e_validar_entrada_numeros("Quantas rodadas? (min: 1 e max: 99) ", 1, 99) # Recebe e valida a entrada do número de rounds
+        while max_rounds % 2 == 0:
+            print("O número de rounds deve ser impar")
+            max_rounds = funcoes.receber_e_validar_entrada_numeros("Quantas rodadas? (min: 1 e max: 99) ", 1, 99)
 
     if nivel == 0: # facil
         N_COLS = 3
@@ -117,13 +132,12 @@ def main():
 
     input()
 
-
     # VARIÁVEIS DE JOGO
     quemJoga = 0 # 0 = jogador1, 1 = jogador2
     rodada = 0 # contador de rodadas
 
-    while funcoes.isMatrizCompleta(tabuleiro1["matriz_oculta"]) == False or funcoes.isMatrizCompleta(tabuleiro2["matriz_oculta"]): # enquanto não tiver todas as posições preenchidas
-        clear()
+    while not funcoes.have_the_game_finished(tabuleiro1["matriz_oculta"], tabuleiro2["matriz_oculta"], rodada, max_rounds, tipo_termino): # enquanto não tiver todas as posições preenchidas
+        funcoes.clear()
         
         tabuleiro = {}
 
@@ -266,12 +280,12 @@ def main():
 
     funcoes.clear() # limpa a tela
 
-    if quemJoga == 0:
-        historico_jogadas["vencedor"] = "2"
-        print("O jogador 2 venceu!")
-    elif quemJoga == 1:
+    if pontuacao["jogador1"] > pontuacao["jogador2"]:
         historico_jogadas["vencedor"] = "1"
         print("O jogador 1 venceu!")
+    elif pontuacao["jogador1"] < pontuacao["jogador2"]:
+        historico_jogadas["vencedor"] = "2"
+        print("O jogador 2 venceu!")
     else:
         historico_jogadas["vencedor"] = "empate"
         print("Empate!")
