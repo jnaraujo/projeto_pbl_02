@@ -127,146 +127,140 @@ def main():
 
     #################################
 
-
-    print(tabuleiro1)
-
-    input()
-
     # VARIÁVEIS DE JOGO
     quemJoga = 0 # 0 = jogador1, 1 = jogador2
     rodada = 0 # contador de rodadas
+    playCount = 0
+
+    deveAnalisarResultados = False # se deve analisar os resultados da aproximação
 
     while not funcoes.have_the_game_finished(tabuleiro1["matriz_oculta"], tabuleiro2["matriz_oculta"], rodada, max_rounds, tipo_termino): # enquanto não tiver todas as posições preenchidas
         funcoes.clear()
-        
-        tabuleiro = {}
 
-        if quemJoga == 0: # quando for o jogador 1 de novo
-            rodada += 1 # adiciona 1 as rodadas
+        playCount += 1
+        if playCount == 3: # se for a segunda rodada
+            deveAnalisarResultados = True # deve analisar os resultados da aproximação
+            playCount = 0
 
-        if modo == 1: # modo de 2 tabuleiros
-            if quemJoga == 0:
+        if deveAnalisarResultados == False: # se for uma partida válida
+            tabuleiro = {}
+
+            print(rodada, quemJoga)
+
+            if quemJoga == 0: # quando for o jogador 1 de novo
+                rodada += 1 # adiciona 1 as rodadas
+
+            if modo == 1: # modo de 2 tabuleiros
+                if quemJoga == 0:
+                    tabuleiro = tabuleiro1
+                else:
+                    tabuleiro = tabuleiro2
+            else:
                 tabuleiro = tabuleiro1
-            else:
-                tabuleiro = tabuleiro2
-        else:
-            tabuleiro = tabuleiro1
 
-        print()
+            print()
 
-        print("="*70)
-        print("{:^70s}".format("Rodada {:.0f}".format(rodada-1)))
-        print("{:^70s}".format("Quem joga: " + ("Jogador 1" if quemJoga == 0 else "Jogador 2")))
-        print("{:^70s}".format("Jogador 1 | {} x {} | Jogador 2".format(pontuacao["jogador1"], pontuacao["jogador2"])))
-        print("="*70)
+            print("="*70)
+            print("{:^70s}".format("Rodada {:.0f}".format(rodada-1)))
+            print("{:^70s}".format("Quem joga: " + ("Jogador 1" if quemJoga == 0 else "Jogador 2")))
+            print("{:^70s}".format("Jogador 1 | {} x {} | Jogador 2".format(pontuacao["jogador1"], pontuacao["jogador2"])))
+            print("="*70)
 
-        funcoes.mostrar_matriz_com_resultados(tabuleiro["matriz_aleatoria"], show_sum=True, soma={
-            "linhas": tabuleiro["somaLados"]["linhas"],
-            "colunas": tabuleiro["somaLados"]["colunas"]
-        })
-        # print()
-        funcoes.mostrar_matriz(tabuleiro["matriz_oculta"], funcoes.verificar_somas_matriz(tabuleiro["matriz_oculta"]))
+            funcoes.mostrar_matriz_com_resultados(tabuleiro["matriz_aleatoria"], show_sum=True, soma={
+                "linhas": tabuleiro["somaLados"]["linhas"],
+                "colunas": tabuleiro["somaLados"]["colunas"]
+            })
+            # print()
+            funcoes.mostrar_matriz(tabuleiro["matriz_oculta"], funcoes.verificar_somas_matriz(tabuleiro["matriz_oculta"]))
 
-        tipo = funcoes.receber_e_validar_entrada_tipo() # c = coluna; l = linha
+            tipo = funcoes.receber_e_validar_entrada_tipo() # c = coluna; l = linha
 
-        index = funcoes.receber_e_validar_entrada_col_row(tipo, N_COLS, N_LINHAS) -1 # -1 pois o usuario digita a partir do 1 e a matriz le a partir do 0
+            index = funcoes.receber_e_validar_entrada_col_row(tipo, N_COLS, N_LINHAS) -1 # -1 pois o usuario digita a partir do 1 e a matriz le a partir do 0
 
-        soma = int(input("Digite o valor da soma: "))
+            soma = funcoes.receber_e_validar_entrada_numeros("Digite o valor da soma: ", 1, 99999)
 
-        historico_jogadas["jogador1" if quemJoga == 0 else "jogador2"].append({
-            "tipo": tipo,
-            "index": index,
-            "soma": soma
-        })
+            historico_jogadas["jogador1" if quemJoga == 0 else "jogador2"].append({
+                "tipo": tipo,
+                "index": index,
+                "soma": soma
+            })
 
+            # Verifica o próximo a jogar
+            if quemJoga == 0: # se quem jogou foi o jogador 1
+                quemJoga = 1 # proximo jogador = jogador2
+            else: # se quem jogou foi o jogador 2
+                quemJoga = 0 # proximo jogador = jogador1
+        else: # mostrar quem chegou mais perto da aproximação
 
-        valor = []
-        somaLado = 0
-
-        if tipo == "c":
-            valor = [tabuleiro["matriz_aleatoria"][i][index] for i in range(N_COLS)]
-            somaLado = tabuleiro["somaLados"]["colunas"][index]
-        else:
-            valor = [tabuleiro["matriz_aleatoria"][index][i] for i in range(N_COLS)]
-            somaLado = tabuleiro["somaLados"]["linhas"][index]
-
-        if somaLado == soma:
-            jaFoi = False
-
-            somaDoUsuario = funcoes.verificar_somas_matriz(tabuleiro["matriz_oculta"])
-
-            # verifica se a soma já foi feita
-            if tipo == "c":
-                if somaDoUsuario["colunas"][index] != 0:
-                    jaFoi = True
-            else:
-                if somaDoUsuario["linhas"][index] != 0:
-                    jaFoi = True
             
-            if jaFoi: # se já foi feita
-                print("Coluna já está completa!")
-                print("Você não ganhou nenhum ponto.")
-            else: # se ainda não foi feita
-                if tipo == "c":
-                    for i in range(N_COLS):
-                        tabuleiro["matriz_oculta"][i][index] = valor[i]
-                elif tipo == "l":
-                    tabuleiro["matriz_oculta"][index] = valor
-                print("Parabéns, você acertou a soma!")
-                print("Você ganhou 3 pontos!")
-                pontuacao["jogador1" if quemJoga == 0 else "jogador2"] += 3 # adiciona 3 pontos em caso de acertar tudo
-        elif somaLado > soma:
-            jaFoi = False
-            x = y = maxValue = 0
 
-            if tipo == "c":
-                maxValue = min(valor)
-                indexValue = valor.index(maxValue)
-                x = indexValue
-                y = index
-            elif tipo == "l":
-                maxValue = min(valor)
-                indexValue = valor.index(maxValue)
-                x = index
-                y = indexValue
+            ultimaJogadaJogador1 = historico_jogadas["jogador1"][-1]
+            ultimaJogadaJogador2 = historico_jogadas["jogador2"][-1]
+ 
+            tabuleiro = [] # tabuleiro que será mostrado do jogador
+            tipo = "" # se é coluna ou linha
+            listaDoLado = [] # a lista da linha ou coluna
+            somaLado = 0 # soma do lado da linha ou coluna
+            index = 0  # index da linha ou coluna
+            soma = 0 # soma que o jogador digitou
+            jaFoi = False # se já foi verificado
+
+            ehEmpate = False
+
+            maisProximo = "empate"
+
+            if modo == 1: # modo de 2 tabuleiros
+                maisProximo = funcoes.pegarMaisProximo(historico_jogadas, tabuleiro1["matriz_aleatoria"], tabuleiro2["matriz_aleatoria"])
+            else:
+                maisProximo = funcoes.pegarMaisProximo(historico_jogadas, tabuleiro1["matriz_aleatoria"], tabuleiro1["matriz_aleatoria"])
+
+            if maisProximo == "jogador1":
+                tabuleiro = tabuleiro1
+
+                tipo = ultimaJogadaJogador1["tipo"]
+                index = ultimaJogadaJogador1["index"]
+                soma = ultimaJogadaJogador1["soma"]
+
+                funcoes.analisar_e_dar_pontos(tabuleiro, index, tipo, pontuacao, 0, soma, N_COLS, foiEmpate=False)
+
+                print("Jogador 1 chegou mais perto!")
+
+            elif maisProximo == "jogador2":
+                if modo == 1: # modo de 2 tabuleiros
+                    tabuleiro = tabuleiro2
+                else:
+                    tabuleiro = tabuleiro1
+
+                tipo = ultimaJogadaJogador2["tipo"]
+                index = ultimaJogadaJogador2["index"]
+                soma = ultimaJogadaJogador2["soma"]
+
+                funcoes.analisar_e_dar_pontos(tabuleiro, index, tipo, pontuacao, 1, soma, N_COLS)
+
+                print("Jogador 2 chegou mais perto!")
+            else: # empate
+                tipo = ultimaJogadaJogador1["tipo"]
+                index = ultimaJogadaJogador1["index"]
+                soma = ultimaJogadaJogador1["soma"]
+
+                tabuleiro = tabuleiro1
+
+                funcoes.analisar_e_dar_pontos(tabuleiro, index, tipo, pontuacao, 0, soma, N_COLS)
+
+                tipo = ultimaJogadaJogador2["tipo"]
+                index = ultimaJogadaJogador2["index"]
+                soma = ultimaJogadaJogador2["soma"]
+
+                if modo == 1: # modo de 2 tabuleiros
+                    tabuleiro = tabuleiro2
+
+                funcoes.analisar_e_dar_pontos(tabuleiro, index, tipo, pontuacao, 1, soma, N_COLS, foiEmpate=True)
+
+                funcoes.clear()
                 
-            if tabuleiro["matriz_oculta"][x][y] != "><": # se a posição já estiver preenchida
-                jaFoi = True
-                print("A soma é maior!")
-                print("Como você não abriu uma casa nova, não ganhou ponto.")
-            else:
-                pontuacao["jogador1" if quemJoga == 0 else "jogador2"] += 1 # adiciona 1 ponto em caso de mostrar uma casa
-                tabuleiro["matriz_oculta"][x][y] = maxValue
-                print("A soma é maior!")
-                print("Você ganhou 1 ponto por mostrar uma casa!")
-        else:
-            x = y = maxValue = 0
-            if tipo == "c":
-                maxValue = max(valor)
-                indexValue = valor.index(maxValue)
-                x = indexValue
-                y = index
-            elif tipo == "l":
-                maxValue = max(valor)
-                indexValue = valor.index(maxValue)
-                x = index
-                y = indexValue
+                print("Empate!")
 
-            if tabuleiro["matriz_oculta"][x][y] != "><": # se a posição já estiver preenchida
-                jaFoi = True
-                print("A soma é menor!")
-                print("Como você não abriu uma casa nova, não ganhou ponto.")
-            else:
-                pontuacao["jogador1" if quemJoga == 0 else "jogador2"] += 1 # adiciona 1 ponto em caso de mostrar uma casa
-                tabuleiro["matriz_oculta"][x][y] = maxValue
-                print("A soma é menor!")
-                print("Você ganhou 1 ponto por mostrar uma casa!")
-
-        # Verifica o próximo a jogar
-        if quemJoga == 0: # se quem jogou foi o jogador 1
-            quemJoga = 1 # proximo jogador = jogador2
-        else: # se quem jogou foi o jogador 2
-            quemJoga = 0 # proximo jogador = jogador1
+            deveAnalisarResultados = False
 
         input("\nAperte enter para continuar:")
 
@@ -293,5 +287,7 @@ def main():
     verHistorico = input("Deseja ver o histórico de jogadas? (s/n)")[0].lower() == "s"
     if verHistorico:
         funcoes.mostrar_historico(historico_jogadas)
+
+
 if __name__ == "__main__":
     main()

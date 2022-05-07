@@ -167,6 +167,60 @@ def have_the_game_finished(matriz_oculta_tabuleiro1, matriz_oculta_tabuleiro2, r
             return True
     return False
 
+def pegarMaisProximo(historico, matriz_aleatoria1, matriz_aleatoria2):
+    ultimaJogadaJogador1 = historico["jogador1"][-1] # ultima jogada do jogador 1
+    ultimaJogadaJogador2 = historico["jogador2"][-1] # ultima jogada do jogador 2
+
+    N_COLS = len(matriz_aleatoria2[0])
+
+    valorSoma1 = []
+    valorSoma2 = []
+
+    if ultimaJogadaJogador1["tipo"] == "c":
+        valorSoma1 = [matriz_aleatoria1[i][ultimaJogadaJogador1["index"]] for i in range(N_COLS)]
+    else:
+        valorSoma1 = [matriz_aleatoria1[ultimaJogadaJogador1["index"]][i] for i in range(N_COLS)]
+    
+    if ultimaJogadaJogador2["tipo"] == "c":
+        valorSoma2 = [matriz_aleatoria2[i][ultimaJogadaJogador2["index"]] for i in range(N_COLS)]
+    else:
+        valorSoma2 = [matriz_aleatoria2[ultimaJogadaJogador2["index"]][i] for i in range(N_COLS)]
+    
+    valorSoma1 = sum(valorSoma1)
+    valorSoma2 = sum(valorSoma2)
+
+    distanciaJogador1 = abs(valorSoma1 - ultimaJogadaJogador1["soma"])
+    distanciaJogador2 = abs(valorSoma2 - ultimaJogadaJogador2["soma"])
+
+    if distanciaJogador1 < distanciaJogador2:
+        return "jogador1"
+    elif distanciaJogador1 > distanciaJogador2:
+        return "jogador2"
+    else:
+        return "empate"
+
+# pegarMaisProximo({
+#     "jogador1": [
+#         {"tipo": "c", "index": 0, "soma": 1},
+#         {"tipo": "c", "index": 1, "soma": 5},
+#         {"tipo": "c", "index": 2, "soma": 25},
+#     ],
+#     "jogador2": [
+#         {"tipo": "c", "index": 0, "soma": 4},
+#         {"tipo": "c", "index": 1, "soma": 12},
+#         {"tipo": "l", "index": 2, "soma": 10},
+#     ]}, [
+#     [1, 2, 3], # 6
+#     [4, 5, 6], # 15
+#     [7, 8, 9], # 24
+#     #12 15 18
+# ], [
+#     [1, 2, 3], # 6
+#     [4, 5, 6], # 15
+#     [7, 8, 9], # 24
+#     #12 15 18
+# ])
+
 
 def verificar_somas_matriz(matriz):
     length = len(matriz)
@@ -262,3 +316,67 @@ def receber_e_validar_entrada_tipo():
         except ValueError:
             print("Entrada inválida!")
     return entrada
+
+def analisar_e_dar_pontos(tabuleiro, index, tipo, pontuacao, quemJoga, soma, N_COLS, foiEmpate=False):
+    if tipo == "c": # se for coluna
+        listaDoLado = [tabuleiro["matriz_aleatoria"][i][index] for i in range(N_COLS)]
+        somaLado = tabuleiro["somaLados"]["colunas"][index]
+    else: # se for linha
+        listaDoLado = [tabuleiro["matriz_aleatoria"][index][i] for i in range(N_COLS)]
+        somaLado = tabuleiro["somaLados"]["linhas"][index]
+
+    if somaLado == soma:
+        if tipo == "c":
+            for i in range(N_COLS):
+                tabuleiro["matriz_oculta"][i][index] = listaDoLado[i]
+        elif tipo == "l":
+            tabuleiro["matriz_oculta"][index] = listaDoLado
+
+        print("Parabéns, você acertou a soma!")
+        print("Você ganhou 3 pontos!")
+
+        pontuacao["jogador1" if quemJoga == 0 else "jogador2"] += 3 # adiciona 3 pontos em caso de acertar tudo
+
+    elif somaLado > soma:
+        x = y = maxValue = 0
+
+        if tipo == "c":
+            maxValue = min(listaDoLado)
+            indexValue = listaDoLado.index(maxValue)
+            x = indexValue
+            y = index
+        elif tipo == "l":
+            maxValue = min(listaDoLado)
+            indexValue = listaDoLado.index(maxValue)
+            x = index
+            y = indexValue
+            
+        if tabuleiro["matriz_oculta"][x][y] != "><" and not foiEmpate: # se a posição já estiver preenchida
+            print("A soma é maior!")
+            print("Como você não abriu uma casa nova, não ganhou ponto.")
+        else:
+            pontuacao["jogador1" if quemJoga == 0 else "jogador2"] += 1 # adiciona 1 ponto em caso de mostrar uma casa
+            tabuleiro["matriz_oculta"][x][y] = maxValue
+            print("A soma é maior!")
+            print("Você ganhou 1 ponto por mostrar uma casa!")
+    else:
+        x = y = maxValue = 0
+        if tipo == "c":
+            maxValue = max(listaDoLado)
+            indexValue = listaDoLado.index(maxValue)
+            x = indexValue
+            y = index
+        elif tipo == "l":
+            maxValue = max(listaDoLado)
+            indexValue = listaDoLado.index(maxValue)
+            x = index
+            y = indexValue
+
+        if tabuleiro["matriz_oculta"][x][y] != "><" and not foiEmpate: # se a posição já estiver preenchida
+            print("A soma é menor!")
+            print("Como você não abriu uma casa nova, não ganhou ponto.")
+        else:
+            pontuacao["jogador1" if quemJoga == 0 else "jogador2"] += 1 # adiciona 1 ponto em caso de mostrar uma casa
+            tabuleiro["matriz_oculta"][x][y] = maxValue
+            print("A soma é menor!")
+            print("Você ganhou 1 ponto por mostrar uma casa!")
