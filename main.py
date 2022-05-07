@@ -221,9 +221,11 @@ def main():
                 index = ultimaJogadaJogador1["index"]
                 soma = ultimaJogadaJogador1["soma"]
 
+                print("Jogador 1 chegou mais perto!")
+
                 funcoes.analisar_e_dar_pontos(tabuleiro, index, tipo, pontuacao, 0, soma, N_COLS, foiEmpate=False)
 
-                print("Jogador 1 chegou mais perto!")
+                
 
             elif maisProximo == "jogador2":
                 if modo == 1: # modo de 2 tabuleiros
@@ -235,9 +237,10 @@ def main():
                 index = ultimaJogadaJogador2["index"]
                 soma = ultimaJogadaJogador2["soma"]
 
-                funcoes.analisar_e_dar_pontos(tabuleiro, index, tipo, pontuacao, 1, soma, N_COLS)
-
                 print("Jogador 2 chegou mais perto!")
+
+                funcoes.analisar_e_dar_pontos(tabuleiro, index, tipo, pontuacao, 1, soma, N_COLS)
+                
             else: # empate
                 tipo = ultimaJogadaJogador1["tipo"]
                 index = ultimaJogadaJogador1["index"]

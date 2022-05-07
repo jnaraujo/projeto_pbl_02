@@ -317,6 +317,11 @@ def receber_e_validar_entrada_tipo():
             print("Entrada inválida!")
     return entrada
 
+
+def dar_pontos(jogador : int, pontos, pontuacao):
+    pontuacao["jogador1" if jogador == 0 else "jogador2"] += pontos
+    
+
 def analisar_e_dar_pontos(tabuleiro, index, tipo, pontuacao, quemJoga, soma, N_COLS, foiEmpate=False):
     if tipo == "c": # se for coluna
         listaDoLado = [tabuleiro["matriz_aleatoria"][i][index] for i in range(N_COLS)]
@@ -332,10 +337,9 @@ def analisar_e_dar_pontos(tabuleiro, index, tipo, pontuacao, quemJoga, soma, N_C
         elif tipo == "l":
             tabuleiro["matriz_oculta"][index] = listaDoLado
 
-        print("Parabéns, você acertou a soma!")
-        print("Você ganhou 3 pontos!")
+        print("Parabéns! Ganhou 3 pontos!")
 
-        pontuacao["jogador1" if quemJoga == 0 else "jogador2"] += 3 # adiciona 3 pontos em caso de acertar tudo
+        dar_pontos(quemJoga, 3, pontuacao)	# adiciona 3 pontos em caso de acertar tudo
 
     elif somaLado > soma:
         x = y = maxValue = 0
@@ -355,10 +359,11 @@ def analisar_e_dar_pontos(tabuleiro, index, tipo, pontuacao, quemJoga, soma, N_C
             print("A soma é maior!")
             print("Como você não abriu uma casa nova, não ganhou ponto.")
         else:
-            pontuacao["jogador1" if quemJoga == 0 else "jogador2"] += 1 # adiciona 1 ponto em caso de mostrar uma casa
+            dar_pontos(quemJoga, 1, pontuacao) # adiciona 1 ponto em caso de mostrar uma casa
+
             tabuleiro["matriz_oculta"][x][y] = maxValue
             print("A soma é maior!")
-            print("Você ganhou 1 ponto por mostrar uma casa!")
+            print("Ganhou 1 ponto por mostrar uma casa!")
     else:
         x = y = maxValue = 0
         if tipo == "c":
@@ -376,7 +381,7 @@ def analisar_e_dar_pontos(tabuleiro, index, tipo, pontuacao, quemJoga, soma, N_C
             print("A soma é menor!")
             print("Como você não abriu uma casa nova, não ganhou ponto.")
         else:
-            pontuacao["jogador1" if quemJoga == 0 else "jogador2"] += 1 # adiciona 1 ponto em caso de mostrar uma casa
+            dar_pontos(quemJoga, 1, pontuacao) # adiciona 1 ponto em caso de mostrar uma casa
             tabuleiro["matriz_oculta"][x][y] = maxValue
             print("A soma é menor!")
-            print("Você ganhou 1 ponto por mostrar uma casa!")
+            print("Ganhou 1 ponto por mostrar uma casa!")
