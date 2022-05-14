@@ -14,8 +14,6 @@
 ########## LIBS ##########
 
 from utils import funcoes, tela
-import os
-
 
 ########## CONSTANTES ##########
 
@@ -126,7 +124,7 @@ def main():
     tabuleiro1 = {
         "matriz_aleatoria": funcoes.gerar_matriz_aleatoria(N_LINHAS, N_COLS, QNT_RAND_NUNS), # matriz aleatoria gerada pelo sistema
         "matriz_oculta": funcoes.gerar_matriz_oculta(N_LINHAS, N_COLS), # matriz inicialmente oculta que é mostrada na tela; é modificada com o tempo
-        "somaLados": [], # quando vale a soma das colunas e linhas
+        "somaLados": [], # quanto vale a soma das colunas e linhas
     }
     tabuleiro1["somaLados"] = funcoes.somarLadosMatriz(tabuleiro1["matriz_aleatoria"])
 
