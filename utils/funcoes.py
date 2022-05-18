@@ -121,29 +121,6 @@ def pegarMaisProximo(historico, matriz_aleatoria1, matriz_aleatoria2):
     else: # se os jogadores estiverem na mesma distancia
         return "empate"
 
-# pegarMaisProximo({
-#     "jogador1": [
-#         {"tipo": "c", "index": 0, "soma": 1},
-#         {"tipo": "c", "index": 1, "soma": 5},
-#         {"tipo": "c", "index": 2, "soma": 25},
-#     ],
-#     "jogador2": [
-#         {"tipo": "c", "index": 0, "soma": 4},
-#         {"tipo": "c", "index": 1, "soma": 12},
-#         {"tipo": "l", "index": 2, "soma": 10},
-#     ]}, [
-#     [1, 2, 3], # 6
-#     [4, 5, 6], # 15
-#     [7, 8, 9], # 24
-#     #12 15 18
-# ], [
-#     [1, 2, 3], # 6
-#     [4, 5, 6], # 15
-#     [7, 8, 9], # 24
-#     #12 15 18
-# ])
-
-
 def verificar_somas_matriz(matriz):
     '''
         Função que calcula e retorna se os valores já revelados formam somas.
@@ -274,9 +251,16 @@ def dar_pontos(jogador : int, pontos, pontuacao):
     pontuacao["jogador1" if jogador == 0 else "jogador2"] += pontos
     
 
-def analisar_e_dar_pontos(tabuleiro, index, tipo, pontuacao, quemJoga, soma, N_COLS, foiEmpate=False):
+def analisar_matriz(tabuleiro, index, tipo, soma, N_COLS):
     '''
         Função que analisa e dá pontos ao jogador.
+
+        returna o resultado.
+
+        -1: resultado já apreceu
+        0: completou a soma
+        1: chute maior que o valor correto
+        2: chute menor que o valor correto
     '''
     listaDoLado = [] # a lista da linha ou coluna
     somaLado = 0 # soma do lado da linha ou coluna
@@ -290,15 +274,35 @@ def analisar_e_dar_pontos(tabuleiro, index, tipo, pontuacao, quemJoga, soma, N_C
         somaLado = tabuleiro["somaLados"]["linhas"][index] # pega a soma da linha
 
     if somaLado == soma: # se o jogador acertou a soma da linha ou coluna
+        jaFoiRevelada = False # se a soma já foi revelada
+
         if tipo == "c":
+            qnt_reveladas = 0
             for i in range(N_COLS):
-                tabuleiro["matriz_oculta"][i][index] = listaDoLado[i] # coloca os números na coluna da matriz oculta
+                if tabuleiro["matriz_oculta"][i][index] != "><":
+                    qnt_reveladas += 1
+                
+            if qnt_reveladas == N_COLS:
+                jaFoiRevelada = True
+            
+            if not jaFoiRevelada:
+                for i in range(N_COLS):
+                    tabuleiro["matriz_oculta"][i][index] = listaDoLado[i] # coloca os números na coluna da matriz oculta
         elif tipo == "l":
-            tabuleiro["matriz_oculta"][index] = listaDoLado # coloca os números na linha matriz oculta
+            qnt_reveladas = 0
+            for i in range(N_COLS):
+                if tabuleiro["matriz_oculta"][index][i] != "><":
+                    qnt_reveladas += 1
+            
+            if qnt_reveladas == N_COLS:
+                jaFoiRevelada = True
+            if not jaFoiRevelada:
+                tabuleiro["matriz_oculta"][index] = listaDoLado # coloca os números na linha matriz oculta
 
-        print("Parabéns! Ganhou 3 pontos!")
-
-        dar_pontos(quemJoga, 3, pontuacao)	# adiciona 3 pontos em caso de acertar tudo
+        if not jaFoiRevelada:
+            return 0 # retorna 0 para indicar que o jogador acertou a soma
+        else:
+            return -1 # retorna -1 para indicar que a casa já tinha sido aberta
 
     elif somaLado > soma: # se a soma do jogador for maior que a soma da coluna ou linha
         x = y = minValue = 0
@@ -314,15 +318,13 @@ def analisar_e_dar_pontos(tabuleiro, index, tipo, pontuacao, quemJoga, soma, N_C
             x = index
             y = indexValue
             
-        if tabuleiro["matriz_oculta"][x][y] != "><" and not foiEmpate: # se a posição já estiver preenchida
-            print("A soma é maior!")
-            print("Como você não abriu uma casa nova, não ganhou ponto.")
+        if tabuleiro["matriz_oculta"][x][y] != "><": # se a posição já estiver preenchida
+            return -1 # retorna -1 para indicar que a casa já tinha sido aberta
         else:
-            dar_pontos(quemJoga, 1, pontuacao) # adiciona 1 ponto em caso de mostrar uma casa
-
+            # dar_pontos(quemJoga, 1, pontuacao) # adiciona 1 ponto em caso de mostrar uma casa
             tabuleiro["matriz_oculta"][x][y] = minValue
-            print("A soma é maior!")
-            print("Ganhou 1 ponto por mostrar uma casa!")
+        
+        return 1 # retorna 1 para indicar que o chute foi maior que a soma da coluna ou linha
     else:
         x = y = maxValue = 0
         if tipo == "c":
@@ -336,11 +338,9 @@ def analisar_e_dar_pontos(tabuleiro, index, tipo, pontuacao, quemJoga, soma, N_C
             x = index
             y = indexValue
 
-        if tabuleiro["matriz_oculta"][x][y] != "><" and not foiEmpate: # se a posição já estiver preenchida
-            print("A soma é menor!")
-            print("Como você não abriu uma casa nova, não ganhou ponto.")
+        if tabuleiro["matriz_oculta"][x][y] != "><": # se a posição já estiver preenchida
+            return -1 # retorna -1 para indicar que a casa já tinha sido aberta
         else:
-            dar_pontos(quemJoga, 1, pontuacao) # adiciona 1 ponto em caso de mostrar uma casa
+            # dar_pontos(quemJoga, 1, pontuacao) # adiciona 1 ponto em caso de mostrar uma casa
             tabuleiro["matriz_oculta"][x][y] = maxValue
-            print("A soma é menor!")
-            print("Ganhou 1 ponto por mostrar uma casa!")
+        return 2 # retorna 2 para indicar que o chute foi menor que a soma da coluna ou linha

@@ -54,10 +54,9 @@ def mostrar_historico(historico):
         tipo = "coluna" if historico["jogador1"][i]["tipo"] == "c" else "linha" # se for coluna, se nao for, é linha
         print("(Rodada {}) Jogador 1: Tipo: {}; Index: {}; Soma: {}".format(i, tipo, historico["jogador1"][i]["index"], historico["jogador1"][i]["soma"])) # printa o historico do jogador 1
  
-        # if len(historico["jogador2"]) > i:
-        tipo = "coluna" if historico["jogador2"][i]["tipo"] == "c" else "linha"
-        print("(Rodada {}) Jogador 2: Tipo: {}; Index: {}; Soma: {}".format(i, tipo, historico["jogador2"][i]["index"], historico["jogador2"][i]["soma"])) # printa o historico do jogador 1
-
+        if len(historico["jogador2"]) > i:
+            tipo = "coluna" if historico["jogador2"][i]["tipo"] == "c" else "linha"
+            print("(Rodada {}) Jogador 2: Tipo: {}; Index: {}; Soma: {}".format(i, tipo, historico["jogador2"][i]["index"], historico["jogador2"][i]["soma"])) # printa o historico do jogador 1
     if "vencedor" in historico and historico["vencedor"] != "empate": # se um dos jogadores ganhou
         print("Resultado da partida: Vitória do jogador {}".format(historico["vencedor"]))
     else:
@@ -100,7 +99,7 @@ def mostrar_matriz(matriz, soma={"linhas":[], "colunas": []}):
         for i in range(len(linha)): # para toda coluna na linha
             col = linha[i] # pega a coluna
             if i == 0: # se for a primeira coluna
-                print(" \033[1;30m\033[1;47m{:^4s}\033[0;0m".format(str(col)), end="")
+                print("\033[1;30m\033[1;47m{:^4s}\033[0;0m".format(str(col)), end="")
             else: # se nao for a primeira coluna
                 print(" | \033[1;30m\033[1;47m{:^4s}\033[0;0m".format(str(col)), end="")
         if soma["linhas"][index] > 0: # se a linha tiver uma soma maior que 0
