@@ -187,7 +187,6 @@ def receber_e_validar_entrada_numeros(texto_entrada, v_min, v_max):
             print("Entrada inválida!")
     return entrada # retorna a entrada validada
 
-
 def eh_valida_entrada_col_row(entrada, n_cols):
     '''
         Função que verifica se a entrada é uma coluna ou linha válida.
@@ -243,14 +242,12 @@ def receber_e_validar_entrada_tipo():
             print("Entrada inválida!")
     return entrada
 
-
 def dar_pontos(jogador : int, pontos, pontuacao):
     '''
         Função que dá pontos ao jogador.
     '''
     pontuacao["jogador1" if jogador == 0 else "jogador2"] += pontos
     
-
 def analisar_matriz(tabuleiro, index, tipo, soma, N_COLS):
     '''
         Função que analisa e dá pontos ao jogador.

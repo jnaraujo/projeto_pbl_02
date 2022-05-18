@@ -94,7 +94,7 @@ def mostrar_matriz(matriz, soma={"linhas":[], "colunas": []}):
     print("")
 
     for linha in matriz:
-        print("\033[1;33m{:^2s}\033[0;0m".format(str(index+1)), end="") # print o numero da linha ao lado do tabuleiro
+        print(" \033[1;33m{:^2s}\033[0;0m".format(str(index+1)), end="") # print o numero da linha ao lado do tabuleiro
 
         for i in range(len(linha)): # para toda coluna na linha
             col = linha[i] # pega a coluna
