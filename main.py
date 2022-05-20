@@ -39,7 +39,7 @@ tipo_termino = "soma" # como o jogador desejar terminar o jogo; "soma" ou "round
 
 
 def main():
-    # tela.animacao_inicio()
+    tela.animacao_inicio()
 
     tela.clear()
 
@@ -179,7 +179,7 @@ def main():
                 "linhas": tabuleiro["somaLados"]["linhas"],
                 "colunas": tabuleiro["somaLados"]["colunas"]
             })
-
+            
             tela.mostrar_matriz(tabuleiro["matriz_oculta"], funcoes.verificar_somas_matriz(tabuleiro["matriz_oculta"]))
 
             tipo = funcoes.receber_e_validar_entrada_tipo() # c = coluna; l = linha
@@ -230,6 +230,7 @@ def main():
                 resultado1 = funcoes.analisar_matriz(tabuleiro, index, tipo, soma, N_COLS)
 
                 if resultado1 in [1,2]: # mostrou somente uma casa
+                    print("O chute foi {} que a soma correta!".format("maior" if resultado1 == 1 else "menor"))
                     print("O jogador 1 mostrou somente 1 casa.")
                     print("O jogador 1 ganhou 1 ponto.")
                     funcoes.dar_pontos(0, 1, pontuacao)
@@ -239,7 +240,7 @@ def main():
                     funcoes.dar_pontos(0, 3, pontuacao)
                 else:
                     print("A casa do jogador 1 já tinha sido mostrada.")
-                    print("O jogador 1 ganhou 0 ponto.")
+                    print("O jogador 1 ganhou 0 pontos.")
                 
             elif maisProximo == "jogador2":
                 if modo == 1: # modo de 2 tabuleiros
@@ -252,11 +253,12 @@ def main():
                 soma = ultimaJogadaJogador2["soma"]
 
                 print("="*70)
-                print("{:^70s}".format("EEEEEMPATE!!!"))
+                print("{:^70s}".format("Jogador 2 chegou mais perto!"))
                 print("="*70)
 
                 resultado1 = funcoes.analisar_matriz(tabuleiro, index, tipo, soma, N_COLS)
                 if resultado1 in [1,2]: # mostrou somente uma casa
+                    print("O chute foi {} que a soma correta!".format("maior" if resultado1 == 1 else "menor"))
                     print("O jogador 2 mostrou somente 1 casa.")
                     print("O jogador 2 ganhou 1 ponto.")
                     funcoes.dar_pontos(1, 1, pontuacao)
@@ -266,14 +268,14 @@ def main():
                     funcoes.dar_pontos(1, 3, pontuacao)
                 else:
                     print("A casa do jogador 2 já tinha sido mostrada.")
-                    print("O jogador 2 ganhou 0 ponto.")
+                    print("O jogador 2 ganhou 0 pontos.")
                 
             else: # empate
                 print("="*70)
-                print("{:^70s}".format("Os dois jogadores chegando perto da soma!"))
+                print("{:^70s}".format("Os dois jogadores chegaram perto da soma!"))
                 print("="*70)
 
-                tipo = ultimaJogadaJogador1["tipo"]
+                tipo = ultimaJogadaJogador1["tipo"] # se é coluna ou linha
                 index = ultimaJogadaJogador1["index"]
                 soma = ultimaJogadaJogador1["soma"]
 
@@ -282,6 +284,7 @@ def main():
                 resultado1 = funcoes.analisar_matriz(tabuleiro, index, tipo, soma, N_COLS)
 
                 if resultado1 in [1,2]: # mostrou somente uma casa
+                    print("O chute do jogador 1 foi {} que a soma correta!".format("maior" if resultado1 == 1 else "menor"))
                     print("O jogador 1 mostrou somente 1 casa.")
                     print("O jogador 1 ganhou 1 ponto.")
                     funcoes.dar_pontos(0, 1, pontuacao)
@@ -291,9 +294,9 @@ def main():
                     funcoes.dar_pontos(0, 3, pontuacao)
                 else:
                     print("A casa do jogador 1 já tinha sido mostrada.")
-                    print("O jogador 1 ganhou 0 ponto.")
+                    print("O jogador 1 ganhou 0 pontos.")
 
-                tipo = ultimaJogadaJogador2["tipo"]
+                tipo = ultimaJogadaJogador2["tipo"] # se é coluna ou linha
                 index = ultimaJogadaJogador2["index"]
                 soma = ultimaJogadaJogador2["soma"]
 
@@ -303,6 +306,7 @@ def main():
                 resultado2 = funcoes.analisar_matriz(tabuleiro, index, tipo, soma, N_COLS)
 
                 if resultado2 in [1,2]: # mostrou somente uma casa
+                    print("O chute do jogador 2 foi {} que a soma correta!".format("maior" if resultado2 == 1 else "menor"))
                     print("O jogador 2 mostrou somente 1 casa.")
                     print("O jogador 2 ganhou 1 ponto.")
                     funcoes.dar_pontos(1, 1, pontuacao)
@@ -312,10 +316,9 @@ def main():
                     funcoes.dar_pontos(1, 3, pontuacao)
                 else:
                     print("A casa do jogador 2 já estava tinha sido mostrada.")
-                    print("O jogador 2 ganhou 0 ponto.")
+                    print("O jogador 2 ganhou 0 pontos.")
                 # tela.clear()
                 
-
             deveAnalisarResultados = False
 
         contadorDeJogadas += 1
@@ -325,27 +328,31 @@ def main():
     
     tela.animacao_inicio() # mostra a animação de inicio
 
+    tela.clear() # limpa a tela
+
     print("="*70)
-    print("{:^50}".format("FIM DO JOGO!"))
+    print("{:^70s}".format("FIM DO JOGO!"))
     print("="*70)
 
-    tela.clear() # limpa a tela
+    
 
     if pontuacao["jogador1"] > pontuacao["jogador2"]:
         historico_jogadas["vencedor"] = "1"
         print("="*70)
-        print("{:^70s}".format("O jogador 1 venceu!"))
+        print("|{:^70s}|".format("Resultado: O jogador 1 venceu!"))
         print("="*70)
     elif pontuacao["jogador1"] < pontuacao["jogador2"]:
         historico_jogadas["vencedor"] = "2"
         print("="*70)
-        print("{:^70s}".format("O jogador 2 venceu!"))
+        print("{:^70s}".format("Resultado: O jogador 2 venceu!"))
         print("="*70)
     else:
         historico_jogadas["vencedor"] = "empate"
         print("="*70)
-        print("{:^70s}".format("EMMMMPATEE!"))
+        print("{:^70s}".format("Resultado: EMMMMPATEE!"))
         print("="*70)
+    
+    print("\nObrigado por jogar!\n")
 
     verHistorico = input("Deseja ver o histórico de jogadas? (s/n)")[0].lower() == "s"
     if verHistorico:

@@ -15,7 +15,7 @@ def animacao_inicio():
         for col in range(cols):
             random_number = random.randint(0, 3)
             if random_number == 3:
-                m[row][col] = "|"
+                m[row][col] = random.randint(1, 9)
         mostrar_lista_animacao(m)    
         time.sleep(0.03)
 def mostrar_lista_animacao(matriz):
@@ -89,11 +89,17 @@ def mostrar_matriz_com_resultados(matriz, show_sum=False, soma={"linhas":[], "co
 def mostrar_matriz(matriz, soma={"linhas":[], "colunas": []}):
     index = 0
 
-    for i in range(len(matriz)): # print o numero da coluna em cima do tabuleiro
+    espacamento = " " * (30 - (len(matriz)*3))
+
+    print("\n\n")
+
+    print(espacamento, end="") # printa o espacamento
+    for i in range(len(matriz)): # print do numero da coluna em cima do tabuleiro
         print("    \033[1;33m{:^2s}\033[0;0m ".format(str(i+1)), end="")
     print("")
 
     for linha in matriz:
+        print(espacamento, end="") # printa o espacamento
         print(" \033[1;33m{:^2s}\033[0;0m".format(str(index+1)), end="") # print o numero da linha ao lado do tabuleiro
 
         for i in range(len(linha)): # para toda coluna na linha
@@ -107,13 +113,15 @@ def mostrar_matriz(matriz, soma={"linhas":[], "colunas": []}):
         else: # se nao tiver
             print(" < {:^4s}".format("#"))
         index += 1
-    if True:
-        print("    \/ " * len(soma["colunas"]))
+    print(espacamento, end="") # printa o espacamento
+    print("    \/ " * len(soma["colunas"]))
+    print("   ", end="")
+    print(espacamento, end="") # printa o espacamento
+    for i in range(len(soma["colunas"])): # para toda coluna na linha
+        if soma["colunas"][i] > 0: # se a coluna tiver uma soma maior que 0
+            print("\033[1;32m{:^4s}\033[0;0m".format(str(soma["colunas"][i])), end="")
+        else: # se nao tiver
+            print("{:^4s}".format("#"), end="")
         print("   ", end="")
-        for i in range(len(soma["colunas"])): # para toda coluna na linha
-            if soma["colunas"][i] > 0: # se a coluna tiver uma soma maior que 0
-                print("\033[1;32m{:^4s}\033[0;0m".format(str(soma["colunas"][i])), end="")
-            else: # se nao tiver
-                print("{:^4s}".format("#"), end="")
-            print("   ", end="")
-        print("")    
+    print("")    
+    print("\n\n")
