@@ -58,7 +58,6 @@ def gerar_matriz_aleatoria(n_linhas, n_cols, max_val):
             matriz[i][j] = valores_aleatorio[i * n_cols + j] # adiciona o valor na matriz
     return matriz
 
-
 def isMatrizCompleta(matriz):
     '''
     Função que verifica se uma matriz está completa.
@@ -195,7 +194,7 @@ def eh_valida_entrada_col_row(entrada, n_cols):
         return False
     return True 
 
-def receber_e_validar_entrada_col_row(tipo, n_cols, n_rows):
+def receber_e_validar_entrada_col_row(tipo, n_cols):
     '''
         Função que recebe e valida uma entrada de coluna ou linha.
     '''
@@ -242,7 +241,7 @@ def receber_e_validar_entrada_tipo():
             print("Entrada inválida!")
     return entrada
 
-def dar_pontos(jogador : int, pontos, pontuacao):
+def dar_pontos(jogador, pontos, pontuacao):
     '''
         Função que dá pontos ao jogador.
     '''

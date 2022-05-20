@@ -184,7 +184,7 @@ def main():
 
             tipo = funcoes.receber_e_validar_entrada_tipo() # c = coluna; l = linha
 
-            index = funcoes.receber_e_validar_entrada_col_row(tipo, N_COLS, N_LINHAS) -1 # -1 pois o usuario digita a partir do 1 e a matriz le a partir do 0
+            index = funcoes.receber_e_validar_entrada_col_row(tipo, N_COLS) -1 # -1 pois o usuario digita a partir do 1 e a matriz le a partir do 0
 
             soma = funcoes.receber_e_validar_entrada_numeros("Digite o valor da soma: ", 1, 99999)
 
