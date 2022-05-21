@@ -73,6 +73,7 @@ def isMatrizCompleta(matriz):
 '''
 
 def have_the_game_finished(matriz_oculta_tabuleiro1, matriz_oculta_tabuleiro2, rounds, max_rounds, tipo_termino="soma"):
+    print(rounds, max_rounds)
     '''
     Função que verifica se o jogo terminou.
     '''
@@ -80,7 +81,7 @@ def have_the_game_finished(matriz_oculta_tabuleiro1, matriz_oculta_tabuleiro2, r
         if isMatrizCompleta(matriz_oculta_tabuleiro1) == True or isMatrizCompleta(matriz_oculta_tabuleiro2): # se algumas das matrizes estiver completa
             return True
     else: # se o jogo terminar por numero de rodadas OU soma
-        if rounds >= max_rounds or isMatrizCompleta(matriz_oculta_tabuleiro1) == True or isMatrizCompleta(matriz_oculta_tabuleiro2): # se estiver completado o número de rodadas OU se algumas das matrizes estiver completa
+        if rounds > max_rounds or isMatrizCompleta(matriz_oculta_tabuleiro1) == True or isMatrizCompleta(matriz_oculta_tabuleiro2): # se estiver completado o número de rodadas OU se algumas das matrizes estiver completa
             return True
     return False
 

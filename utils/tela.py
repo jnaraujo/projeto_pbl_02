@@ -27,12 +27,12 @@ def mostrar_lista_animacao(matriz):
 
 def mostrar_regras():
     clear()
-    print("{:^70s}".format("\033[1;33m---- REGRAS ----\033[0;0m"))
+    print("{}".format("\033[1;33m       > REGRAS\033[0;0m"))
     print("")
     regras = '''
-        Objetivo:
         O objetivo do jogo é tentar acerta a soma dos números de uma linha ou coluna.
-        Para tal, dois jogadores irão competir para acertar a soma de uma linha ou coluna.
+        Para tal, dois jogadores irão competir, ganhando o que completar primeiro e/ou tiver
+        mais pontos no fim das rodadas.
 
         Como jogar:
         Os jogadores irão colocar quanto eles acham que é a soma da linha ou coluna.
@@ -40,10 +40,9 @@ def mostrar_regras():
         Se ele acertar exatamente, ele ganha 3 pontos.
         Se os dois chegarem próximo da soma, os dois ganham.
 
+        Porém, se os dois jogares chutarem a mesma soma para a mesma linha/coluna, ganha ponto o que jogou primeiro.
+
         A partida termina quando alguem acertar todas as somas do tabuleiro OU por número de rodadas.
-
-
-        
 
     '''
     for linha in regras.split("\n"):
@@ -52,15 +51,60 @@ def mostrar_regras():
 def mostrar_historico(historico):
     for i in range(len(historico["jogador1"])): # para todas as linhas do historico
         tipo = "coluna" if historico["jogador1"][i]["tipo"] == "c" else "linha" # se for coluna, se nao for, é linha
+
         print("(Rodada {}) Jogador 1: Tipo: {}; Index: {}; Soma: {}".format(i, tipo, historico["jogador1"][i]["index"], historico["jogador1"][i]["soma"])) # printa o historico do jogador 1
  
         if len(historico["jogador2"]) > i:
             tipo = "coluna" if historico["jogador2"][i]["tipo"] == "c" else "linha"
             print("(Rodada {}) Jogador 2: Tipo: {}; Index: {}; Soma: {}".format(i, tipo, historico["jogador2"][i]["index"], historico["jogador2"][i]["soma"])) # printa o historico do jogador 1
+        print()
+ 
     if "vencedor" in historico and historico["vencedor"] != "empate": # se um dos jogadores ganhou
         print("Resultado da partida: Vitória do jogador {}".format(historico["vencedor"]))
     else:
         print("Resultado da partida: Empate") # se nenhum jogador ganhou
+
+def mostrar_historico_parcial(historico):
+
+    print("="*28, " HISTÓRICO ","="*29)
+
+    print("{:<10}|".format("Tipo"), end="")
+    for jogada in historico:
+        print("{:^8s}|".format("COLUNA" if jogada["tipo"] == "c" else "LINHA"), end="")
+    
+    print()
+    print("{:<10}|".format("Indice"), end="")
+    for jogada in historico:
+        print("{:^8s}|".format(str(jogada["index"])), end="")
+    
+    print()
+    print("{:<10}|".format("Chute"), end="")
+    for jogada in historico:
+        print("{:^8s}|".format(str(jogada["soma"])), end="")
+
+    print()
+    print("{:<10}|".format("Resultado"), end="")
+    for jogada in historico:
+        resultado = jogada["resultado"]
+
+        # -1: resultado já apreceu
+        # 0: completou a soma
+        # 1: chute maior que o valor correto
+        # 2: chute menor que o valor correto
+
+        if resultado == 0:
+            resultado = "ACERTOU"
+        elif resultado == 1:
+            resultado = "MAIOR"
+        elif resultado == 2:
+            resultado = "MENOR"
+        elif resultado == -1:
+            resultado = "JÁ SAIU"
+        else:
+            resultado = "-"
+        print("{:^8s}|".format(resultado), end="")
+    print()
+    print("="*70)
 
 def mostrar_matriz_com_resultados(matriz, show_sum=False, soma={"linhas":[], "colunas": []}):
     index = 0

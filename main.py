@@ -2,7 +2,7 @@
 
     Autor: Jônatas Araújo Silva Santos
     Componente Curricular: Algoritmos I
-    Concluido em: 06/04/2022
+    Concluido em: 21/05/2022
     Declaro que este código foi elaborado por mim de forma individual e não contém nenhum
     trecho de código de outro colega ou de outro autor, tais como provindos de livros e
     apostilas, e páginas ou documentos eletrônicos da Internet. Qualquer trecho de código de
@@ -23,16 +23,18 @@ N_COLS = 1 # Número de colunas do tabuleiro
 N_LINHAS = 1 # Número de linhas do tabuleiro
 QNT_RAND_NUNS = 1 # Quantidade de números aleatórios
 
+# Armazena o historico de jogadas
 historico_jogadas = {
     "jogador1": [],
     "jogador2": [],
     "vencedor": "",
 }
+# Armazena a pontuação de cada jogador
 pontuacao = {
     "jogador1": 0,
     "jogador2": 0,
 }
-
+# Armazena o número máximo de rounds
 max_rounds = 0
 
 tipo_termino = "soma" # como o jogador desejar terminar o jogo; "soma" ou "round"
@@ -165,22 +167,23 @@ def main():
             else:
                 tabuleiro = tabuleiro1
 
-            print()
-
-            rodada = contadorDeJogadas // 2
+            rodada = (contadorDeJogadas / 2) + 1 # contador de rodadas
+            contadorDeJogadas += 1
 
             print("="*70)
-            print("{:^70s}".format("Rodada {:.0f}".format(rodada)))
+            print("{:^70s}".format("Rodada {:.0f}".format(int(rodada))))
             print("{:^70s}".format("Quem joga: " + ("Jogador 1" if quemJoga == 0 else "Jogador 2")))
             print("{:^70s}".format("Jogador 1 | {} x {} | Jogador 2".format(pontuacao["jogador1"], pontuacao["jogador2"])))
             print("="*70)
 
-            tela.mostrar_matriz_com_resultados(tabuleiro["matriz_aleatoria"], show_sum=True, soma={
-                "linhas": tabuleiro["somaLados"]["linhas"],
-                "colunas": tabuleiro["somaLados"]["colunas"]
-            })
+            # tela.mostrar_matriz_com_resultados(tabuleiro["matriz_aleatoria"], show_sum=True, soma={
+            #     "linhas": tabuleiro["somaLados"]["linhas"],
+            #     "colunas": tabuleiro["somaLados"]["colunas"]
+            # })
             
             tela.mostrar_matriz(tabuleiro["matriz_oculta"], funcoes.verificar_somas_matriz(tabuleiro["matriz_oculta"]))
+
+            tela.mostrar_historico_parcial(historico_jogadas["jogador1" if quemJoga == 0 else "jogador2"])
 
             tipo = funcoes.receber_e_validar_entrada_tipo() # c = coluna; l = linha
 
@@ -191,7 +194,8 @@ def main():
             historico_jogadas["jogador1" if quemJoga == 0 else "jogador2"].append({
                 "tipo": tipo,
                 "index": index,
-                "soma": soma
+                "soma": soma,
+                "resultado": -2
             })
 
             # Verifica o próximo a jogar
@@ -200,7 +204,6 @@ def main():
             else: # se quem jogou foi o jogador 2
                 quemJoga = 0 # proximo jogador = jogador1
         else: # mostrar quem chegou mais perto da aproximação
-
             ultimaJogadaJogador1 = historico_jogadas["jogador1"][-1]
             ultimaJogadaJogador2 = historico_jogadas["jogador2"][-1]
  
@@ -228,6 +231,8 @@ def main():
                 print("="*70)
 
                 resultado1 = funcoes.analisar_matriz(tabuleiro, index, tipo, soma, N_COLS)
+
+                historico_jogadas["jogador1"][-1]["resultado"] = resultado1
 
                 if resultado1 in [1,2]: # mostrou somente uma casa
                     print("O chute foi {} que a soma correta!".format("maior" if resultado1 == 1 else "menor"))
@@ -257,6 +262,9 @@ def main():
                 print("="*70)
 
                 resultado1 = funcoes.analisar_matriz(tabuleiro, index, tipo, soma, N_COLS)
+
+                historico_jogadas["jogador2"][-1]["resultado"] = resultado1
+
                 if resultado1 in [1,2]: # mostrou somente uma casa
                     print("O chute foi {} que a soma correta!".format("maior" if resultado1 == 1 else "menor"))
                     print("O jogador 2 mostrou somente 1 casa.")
@@ -283,6 +291,8 @@ def main():
 
                 resultado1 = funcoes.analisar_matriz(tabuleiro, index, tipo, soma, N_COLS)
 
+                historico_jogadas["jogador1"][-1]["resultado"] = resultado1
+
                 if resultado1 in [1,2]: # mostrou somente uma casa
                     print("O chute do jogador 1 foi {} que a soma correta!".format("maior" if resultado1 == 1 else "menor"))
                     print("O jogador 1 mostrou somente 1 casa.")
@@ -305,6 +315,8 @@ def main():
 
                 resultado2 = funcoes.analisar_matriz(tabuleiro, index, tipo, soma, N_COLS)
 
+                historico_jogadas["jogador2"][-1]["resultado"] = resultado2
+
                 if resultado2 in [1,2]: # mostrou somente uma casa
                     print("O chute do jogador 2 foi {} que a soma correta!".format("maior" if resultado2 == 1 else "menor"))
                     print("O jogador 2 mostrou somente 1 casa.")
@@ -320,8 +332,6 @@ def main():
                 # tela.clear()
                 
             deveAnalisarResultados = False
-
-        contadorDeJogadas += 1
         input("\nAperte enter para continuar:")
 
     tela.clear() # limpa a tela
