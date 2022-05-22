@@ -15,8 +15,6 @@
 
 from utils import funcoes, tela
 
-########## CONSTANTES ##########
-
 ########## Variáveis ##########
 
 N_COLS = 1 # Número de colunas do tabuleiro
@@ -215,16 +213,16 @@ def main():
             maisProximo = "empate"
 
             if modo == 1: # modo de 2 tabuleiros
-                maisProximo = funcoes.pegarMaisProximo(historico_jogadas, tabuleiro1["matriz_aleatoria"], tabuleiro2["matriz_aleatoria"])
+                maisProximo = funcoes.pegarMaisProximo(historico_jogadas, tabuleiro1["matriz_aleatoria"], tabuleiro2["matriz_aleatoria"]) # pega quem está mais perto da aproximação
             else:
-                maisProximo = funcoes.pegarMaisProximo(historico_jogadas, tabuleiro1["matriz_aleatoria"], tabuleiro1["matriz_aleatoria"])
+                maisProximo = funcoes.pegarMaisProximo(historico_jogadas, tabuleiro1["matriz_aleatoria"], tabuleiro1["matriz_aleatoria"]) # pega quem está mais perto da aproximação
 
-            if maisProximo == "jogador1":
-                tabuleiro = tabuleiro1
+            if maisProximo == "jogador1": # se o jogador 1 está mais perto da aproximação
+                tabuleiro = tabuleiro1 # tabuleiro que será mostrado do jogador
 
-                tipo = ultimaJogadaJogador1["tipo"]
-                index = ultimaJogadaJogador1["index"]
-                soma = ultimaJogadaJogador1["soma"]
+                tipo = ultimaJogadaJogador1["tipo"] # se é coluna ou linha
+                index = ultimaJogadaJogador1["index"] # index da linha ou coluna
+                soma = ultimaJogadaJogador1["soma"] # soma que o jogador digitou
 
                 print("="*70)
                 print("{:^70s}".format("Jogador 1 chegou mais perto!"))
@@ -238,11 +236,11 @@ def main():
                     print("O chute foi {} que a soma correta!".format("maior" if resultado1 == 1 else "menor"))
                     print("O jogador 1 mostrou somente 1 casa.")
                     print("O jogador 1 ganhou 1 ponto.")
-                    funcoes.dar_pontos(0, 1, pontuacao)
+                    funcoes.dar_pontos(0, 1, pontuacao) # dar 1 ponto ao jogador 1
                 elif resultado1 == 0: # mostrou todas as casas
                     print("O jogador 1 mostrou todas as casas.")
                     print("O jogador 1 ganhou 3 ponto.")
-                    funcoes.dar_pontos(0, 3, pontuacao)
+                    funcoes.dar_pontos(0, 3, pontuacao) # dar 3 pontos ao jogador 1
                 else:
                     print("A casa do jogador 1 já tinha sido mostrada.")
                     print("O jogador 1 ganhou 0 pontos.")
